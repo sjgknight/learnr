@@ -1,0 +1,358 @@
+---
+title: "Data cleaning in R"
+author: "Simon Knight, sjgknight@gmail.com, modified to learnr in 2021"
+output: learnr::tutorial
+runtime: shiny_prerendered
+description: "Welcome to this learnr tutorial!"
+---
+
+# Data cleaning in R and OpenRefine
+
+If you're here, you've probably already setup a new project and created this notebook file - but if not, go to the square on the top right of RStudio to create a new project.
+
+******
+
+This document steps through an OpenRefine tutorial (see https://goo.gl/mQC7oe) adapted from other materials, in R...it demonstrates how fantastic OpenRefine is in many respects! 
+
+This resource is adapted from:
+1.	http://enipedia.tudelft.nl/wiki/OpenRefine_Tutorial#Clean_up_country_names (under a CC-By-SA 3.0 license) C.B.Davis, A. Chmieliauskas, G.P.J. Dijkema, I. Nikolic (2015), Enipedia, http://enipedia.tudelft.nl, Energy & Industry group, Faculty of Technology, Policy and Management, TU Delft, Delft, The Netherlands. 
+2.	And http://schoolofdata.org/handbook/recipes/cleaning-data-with-refine/ 
+Both under a CC-By-SA license. To cite, Knight, S., (2016). Cleaning Data with Refine, 
+
+******
+
+# Introduction
+## Setting up in OpenRefine
+Open Refine (previously Google Refine) is a data cleaning software that uses your web browser as an interface. This means it will look like it runs on the internet but all your data remains on your machine and you do not need internet connection to work with it.
+The main aim of Refine is to help you exploring and cleaning your data before you use it further. It is built for large datasets – so don’t worry as long as your spreadsheets can keep the information: Refine can as well.
+To work with your data in Refine you need to start a new project:
+Walkthrough: Creating a Refine project
+1.	Start Refine – this will open a browser window pointing to http://127.0.0.1:3333 if this doesn’t happen open the link with your browser directly
+2.	Create a new project: On the left tab select the “Create Project” tab:
+
+3.	Click on “Choose Files” to choose your downloaded file and click on “next” – you can also use the URL to the CSV directly if your data is hosted on the web.
+4.	You will get a preview on how refine will interpret your data – if you have selected a well formatted CSV or other file: this should be pretty automatic.
+5.	Review the preview carefully to make sure the data looks right. Double check character encoding. Much, but not all data uses UTF-8 these days, but make sure you don’t see any funny characters in preview.
+6.	You may want to turn off “guess data types”, particularly if you have data that contains leading zeros in numbers or identifiers which are significant.
+7.	Name your project in the box on the top right side and click on “Create Project”
+
+8.	The project will open in the project view, this is the basic interface you are going to work with: by default refine shows only 10 rows of data, you can change this on the bar above the data rows. Also you can use the navigation on the right to see the next or previous rows.
+You now have successfully created your first Refine project. Remember: although it runs in a web-browser, the Refine server is still on your machine – all the data is there (so no worries if you handle sensitive information)
+
+## Setting up in R
+```{r setup}
+library(tidyverse)
+#The following code roughly mirrors this bit in OpenRefine (stringsAsFactors=F is broadly equivalent to telling OpenRefine not to predict the datatypes)
+unis <- read.csv("https://goo.gl/EJxa20", header=T, stringsAsFactors=F)
+```
+
+# Exploring Data
+## In OpenRefine
+Once we created our project, let’s go and explore the data and the Refine interface a bit. Using Refine might be intimidating at first, since it seems so different from spreadsheets, once you get used to it you will notice how easily you can do things with it.
+One of the commonly used functions in spreadsheets is sorting and filtering data – to figure out minima, maxima or things about certain categories. Refine can do the same thing.
+Walkthrough: Sorting rows
+1.	Refine handles data similar to a spreadsheet: you have rows, columns and cells – a cell is a field defined by a row and a column.
+2.	To sort your rows based on a specific column click on the small downward triangle next to the column
+
+3.	Select “Sort…” to open the sorting dialog
+4.	You can select what to sort the values as and then what order to sort in. (We’ll sort in text, since for now we only have text columns)
+5.	Click “OK” and your rows will be sorted based on the column
+6.	To undo the sort, click on the column options again, select “sort” then “remove sort”
+
+## And in R
+```{r}
+#probably more useful than sorting, is to view the head or tail of a file
+head(unis)
+
+unis[1:100,]
+tail(unis,100)
+tail(unis)
+
+colnames(unis)
+#we can also sort it
+#unis <- unis[with(unis, order(country, university)), ]  #Base R
+unis <- arrange(unis, country, university) #the tidy approach
+
+head(unis)
+unis
+```
+
+# Slicing, filtering, or faceting data by a value
+## In OpenRefine
+Walkthrough: Faceting rows based on a column
+1.	Select the column options for the column you want to facet with
+2.	Select “Facet”
+ 
+3.	You can facet differently for text, numbers or dates – let’s facet as text – click on “Text facet”
+4.	This will open a facet in the left bar
+ 
+5.	Now select one or more of the choices and you’ll see how your data rows are limited to just those selected.
+6.	Of course you can add more than one facet and thus filter more than once.
+## And in R
+```{r}
+#in R this is probably most easily achieved in base R using the subset function
+#see http://www.statmethods.net/management/subset.html 
+#subset(unis, university == "Cardiff University" | university == "Acadia University", select = c("university", "country", "established"))
+#this is the same thing, it's considered superior for reasons that don't matter here
+#unis[c("university","country","established")][unis$university == "Cardiff University" | unis$university == "Acadia University", ]
+#subset(unis, university == "Cambridge", select = c("university", "country", "established"))
+#unis[grep("Cambridge", unis$university), ]
+#subset(unis, grepl("Cambridge", unis$university))
+##########################################################
+##########################################################
+# We're going to do this using tidyverse functions
+
+unis %>% filter(university == "Cardiff University" | university == "Acadia University") %>%
+  select(university,country,established)
+
+#but often, we'll want our filter to be more subtle than this, consider for example
+unis %>% filter(university == "Cambridge") %>%
+  select(university, country, established)
+#but...we know that institution exists
+
+unis %>% filter(str_detect(university,"Cambridge")) %>%
+  select(university,country,established)
+#note this isn't quite right ("Cambridge College" is a rather different place), we could use different ways to filter this, here's one involving negation using !
+unis %>% filter(str_detect(university,"Cambridge") & !str_detect(university,"College")) %>%
+  select(university,country,established)
+```
+
+# Dealing with NAs
+
+## In OpenRefine
+If you look closely at some facets, you’ll notice that on the bottom you have a selector saying “(blank)”.  You’ll also see some duplicate options (e.g. N/A, NA, none, etc.)
+
+Walkthrough: Filling in the (blank)s
+1.	Choose the “(blank)” facet in your “numPostgrad” column
+2.	Hover over ‘edit’ and replace (blank) with NA (or whatever other value)
+
+3.	You can also edit individual values within the table on the right  
+
+4.	Use the menu to navigate to ‘cluster and edit’ (note the other options here are also very useful)
+
+5.	This allows you to merge multiple the multiple NA values using string matching – note that ‘none’ (i.e., 0) is not the same as NA (not available)
+6.	Play with the different options on the ‘country’ column and merge the values
+
+## And NAs in R
+```{r}
+#here it's useful to do two things, first learn about replacement, e.g.:
+unis$established[unis$established==""] <- NA
+#str_replace from the stringr package is also very useful
+
+#and to explore your values
+table(unis$established)
+
+#hm...there are a lot of those, how about
+table(unis[c("established")][is.character(unis$established),])
+
+
+```
+
+```{r}
+#ok so it looks like there might be two options here.
+#either, we use a fuzzy matching (e.g. using agrep) to identify strings that look similar, possibly using a ground truth (e.g. a reference list of university names) to match these against
+#in OpenRefine this is called reconciliation http://freeyourmetadata.org/reconciliation/ 
+
+
+#or - a slower mechanism - we use entity recognition
+#it's worth noting that in this discussion of a similar problem, someone recommends using openrefine! https://stackoverflow.com/questions/6683380/techniques-for-finding-near-duplicate-records 
+#https://www.r-bloggers.com/merging-data-sets-based-on-partially-matched-data-elements/ and this great blog post discusses implementing some of the openrefine approaches in R (although, only partially, and not all of them - i.e., openrefine is really really powerful!)
+
+#using entity  recognition!
+#https://rpubs.com/lmullen/nlp-chapter
+```
+
+```{r}
+library(openNLP)
+library(NLP)
+entities <- function(doc, kind) {
+  s <- doc$content
+  a <- annotations(doc)[[1]]
+  if(hasArg(kind)) {
+    k <- sapply(a$features, `[[`, "kind")
+    s[a[k == kind]]
+  } else {
+    s[a[a$type == "entity"]]
+  }
+}
+
+#text <- c("the year 2015 is now")
+word_ann <- Maxent_Word_Token_Annotator()
+sent_ann <- Maxent_Sent_Token_Annotator()
+location_ann <- Maxent_Entity_Annotator(kind = "location")
+organization_ann <- Maxent_Entity_Annotator(kind = "organization")
+money_ann <- Maxent_Entity_Annotator(kind = "money")
+date_ann <- Maxent_Entity_Annotator(kind = "date")
+
+pipeline <- list(sent_ann,
+                 word_ann,
+                 location_ann,
+                 organization_ann,
+                 money_ann,
+                 date_ann)
+```
+
+Note we only need to do this for unique values, given it's very timeconsuming it's well worth subsetting and rejoining
+```{r}
+estab <- as.data.frame(unique(unis$established))
+
+estab$established_ann <- lapply(estab$`unique(unis$established)`, function(x) annotate(x, list(sent_ann,word_ann,date_ann)))
+
+estab$established_ann_plain <- apply(estab[c("unique(unis$established)","established_ann")], 1, function(x) AnnotatedPlainTextDocument(x[[1]], x[[2]]))
+
+estab$established_date_extract <- lapply(estab$established_ann_plain, function(x) (x)[[1]][[1]])
+
+estab$established_date_extract <- unlist(estab$established_date_extract)
+#a tonne of cleaning is likely here, but at least its of date values!
+
+unis <- merge(unis, estab[c("unique(unis$established)","established_date_extract")], by.x="established", by.y="unique(unis$established)" )
+
+#let's just save this, we don't want to need  to redo the labelling! 
+#we need to select columns if you want to save as csv because you can't save list 
+
+save(unis,file="unis.Rda")
+```
+
+
+```{r}
+library(stringr) #for some cleaning
+unis$university <- str_trim(unis$university,side = "both")
+#converting things like this is surprisingly hard if you don't know what to search for...: ("Universidad Ju%C3%A1rez Aut%C3%B3noma de Tabasco")
+
+org <- as.data.frame(unique(unis$university))
+
+org$uni_org <- lapply(org$`unique(unis$university)`, function(x) annotate(x, list(sent_ann,word_ann,organization_ann)))
+
+org$uni_org_plain <- apply(org[c("unique(unis$university)","uni_org")], 1, function(x) AnnotatedPlainTextDocument(x[[1]], x[[2]]))
+
+
+org$uni_org_extract <- lapply(org$uni_org_plain, function(x) (x)[[1]][[1]])
+
+org$uni_org_extract <- unlist(org$uni_org_extract)
+
+View(org[grep("Cambridge", org$`unique(unis$university)`), ])
+
+unis <- merge(unis, org[c("unique(unis$university)", "uni_org_extract")], by.x = "university", by.y="unique(unis$university)")
+
+save(unis,file="unis.Rda")
+
+```
+
+```{r}
+#how do we convert words to numbers, given messy data?
+endow <- as.data.frame(unique(unis$endowment))
+
+endow$endowment_mon <- lapply(endow$`unique(unis$endowment)`, function(x) annotate(x, list(sent_ann,word_ann,money_ann)))
+
+endow$endowment_mon_plain <- apply(endow[c("unique(unis$endowment)","endowment_mon")], 1, function(x) AnnotatedPlainTextDocument(x[[1]], x[[2]]))
+
+endow$endowment_mon_extract <- lapply(endow$endowment_mon_plain, function(x) (x)[[1]][[1]])
+
+endow$endowment_mon_extract <- unlist(endow$endowment_mon_extract)  #I haven't checked these at all, do they look about right?
+
+unis <- merge(unis, endow[c("unique(unis$endowment)", "endowment_mon_extract")], by.x="endowment", by.y="unique(unis$endowment)")
+
+save(unis,file="unis.Rda")
+
+#load("unis.Rda")
+
+#write.csv(unis,"unis.csv") #let's just save this, we don't want to need  to redo the 
+```
+
+
+
+
+```{r}
+#extract locations, but also merge near duplicates
+#devtools::install_github("ropensci/monkeylearn")
+
+```
+
+Step 8: Deduplicate entries ([near] duplicate rows)
+There are a lot of (nearly) duplicate rows in the data, this can happen for various reasons including human error and because multiple historic values are stored. We want to keep just one copy.
+To do this (based on documentation here), click on the column with the university names, and then click on "Sort". Once you do this, you will notice that there is a new "Sort" menu at the top. Click on this and select "Reorder rows permanently". This may take a while as it renumbers the rows in which the entries appear. 
+
+Then on the column with university names, Edit cells -> Blank down 
+
+Then on the same column, Facet -> Customized facets -> Facet by blank 
+Now we want to remove all the blank rows, so select true, then on the "All" column on the left, Edit rows -> Remove all matching rows, like you have done when working with the numStudents and endowment columns. 
+Once you remove all the facets, and you now have a (mostly) cleaned data set. 
+
+
+```{r}
+#rather than do it this way, we'd probably use the entity recognition approach
+
+```
+
+
+Step 9: Exploring the data with scatter plots
+Click on the "endowment" column, Facet -> Scatterplot facet. 
+This shows the relationships between all of the numeric values in each of the columns. Click on "log" to get a better view. 
+
+Click on the plot for endowment vs. numStudents. You can now drag select a portion of the plot, and then see the rows corresponding to that selection. 
+
+```{r}
+
+```
+
+Step 10: Geocoding names and addresses
+This next part shows (based on documentation here) how to go from a description of a place (i.e. the name of a university) to values for its (likely) geographic coordinates. Behind the scenes, this uses Google Maps to figure out what is the most likely location you are asking for. 
+To learn how to do this, you don't need to do process the whole data set. This can take a while, and Google limits you to 2000 requests per day. It's better to just select around 10 rows and verify that it works. 
+An easy way to get a limited set of rows is by using a numeric log facet of the number of students, so use Facet -> Customized facets -> Numeric log facet 
+ 
+Use this facet to make a selection of around ten rows, and then check the matching rows number to verify that you have a reasonable selection size: 
+
+
+Now the fun begins and we want to do Edit column -> Add column by fetching URLs. In other words, the values of the cells in the new column are based on data that is retrieved from the Internet. 
+Enter in the expression below, and you should see a list of URLs with the names of the universities at the end of the URLs. Specify a new column name such as "geocodingResponse", and set the throttle delay to around 500 milliseconds. 
+"http://maps.google.com/maps/api/geocode/json?sensor=false&address=" + escape(value, "url")
+
+
+You should get a bunch of data back. To convert this into a more readable format, you need to click on the geocodingResponse column, and then on Edit column -> Add column based on this column. Enter in the expression below 
+with(value.parseJson().results[0].geometry.location, pair, pair.lat +", " + pair.lng)
+Now you have a single column with coordinates. You can split this into columns for latitude and longitude by selecting Edit Column -> Split into several columns and specifying a separator of ",". These columns can then be renamed using Edit Column -> Rename this column. 
+```{r}
+#there are a few ways we can do this in R
+#the most obvious one is using googlemaps api geocoding https://cengel.github.io/rspatial/5_Geocoding.nb.html#issues - but it limits us to 2500 queries a day.  to use that 
+#library(ggmap)
+#geocode(unis$uni_org_extract[[1]])  (,etc.) to get latlong
+
+#I think it should also be possible to use WikiData (possibly DBPedia) to access the organisation coordinates. Likely more missing data(?) but that can always be filled with google if necessary without first using the 2500 a day limit....of course if you subset to unique unis there are a lot fewer! 
+library(WikidataR)
+
+#ok so first we have to find the Wikidata entity code for all of the universities
+unis$wikidata <- NA
+
+wkd <- as.data.frame(unique(unis$uni_org_extract))
+wkd$wikidata <- NA
+wkd$wikidata <- lapply(wkd[,1], function(x) find_item((x), language = "en", limit = 1))[[1]]$id #FALSE POSITIVES!!  This is pretty slow
+#wkd$wikidata <- lapply(wkd$wikidata, function(x) ifelse(length(x) > 0, unlist(x[[1]][[2]]), ""))
+
+wkd$lat <- NA
+wkd$long <- NA
+
+#get_geo_entity("Q35794", language = "en", radius = NULL)[[c(3,4)]]
+x <-  (lapply(wkd[,2], function(x) {
+  if(x != "") {
+    unlist(get_geo_entity(x, language = "en", radius = NULL)[c(3:4)])
+    } else {
+      ""}
+}))
+
+wkd$lat <- unlist(lapply(x, function(y) ifelse(length(y) > 0, unlist(y)[1], "")))
+wkd$long <- unlist(lapply(x, function(y) ifelse(length(y) > 0, unlist(y)[2], "")))
+
+rm(x)
+save(wkd,file="unis_location.Rda")
+
+load("unis_location.Rda")
+
+#ok, now we can map this. Again, we can do that in OpenRefine on google fusion tables really easily. To do it in R requires a bit of leg work, and there are various options depending on what we want to visualise (e.g., do we want to map universities to points, or to do a heatmap of endowment sizes, or...)
+
+```
+
+Step 11: Export Data
+The data can be exported to formats such as Excel. If you read this into tools such as SPSS and notice that the last column is missing, then open the file up in Excel, re-save it, and try to open it up again in SPSS. 
+```{r}
+
+```

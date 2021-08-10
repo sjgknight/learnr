@@ -1,0 +1,115 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk (or the green triangle on the top left of the grey chunk), or by placing your cursor inside the grey box (which is a code chunk) and pressing *Ctrl+Shift+Enter*. 
+
+
+## Hello
+You already did the tutorial contained in `ex-setup-r` to download and setup r and RStudio. 
+
+To give you a simple idea of what these tutorials do on a local machine, let's run the following line. 
+
+```{r learnr_hi}
+
+rmarkdown::run("hello/hello.Rmd")
+
+```
+## An important setup step do not skip over this heading!
+We also need to install some packages...this is not very elegant, but it goes over all the files in this project and looks for Rmds. Then it reads each line of the Rmds, and extracts references to library calls. I've already done this, so I've pasted the output into one line for you to run.  You can modify this if you don't want to install all the packages at once (it may take a while). 
+
+```{r}
+# rmd <- list.files(path = ".", recursive = T) %>%
+#   str_subset("\\.Rmd$") 
+# rmd <- lapply(rmd, readLines)
+# packs <- rm_between(rmd, c("library(", "require("), c(")", ")"), extract=TRUE)
+# packs <- unique(unlist(packs))
+
+# boot <- 'if (!require("pacman")) install.packages("pacman")'
+# cat(paste0(boot, "\npacman::p_load(", paste(na.omit(unlist(packs)), collapse=", "), ")\n"))
+
+install.packages(pacman)
+library(packman)
+
+pacman::p_load(tidyverse, openNLP, NLP, stringr, ggmap, WikidataR, ggplot2, psych, doBy, reshape2, knitr, lattice, learnr, dslabs, shiny, gradethis, textdata, wordcloud, ggwordcloud, wordcloud2, kableExtra, RSentiment, sentimentr, tidytext, corrplot, rsconnect, nycflights13, Lahman, qdapRegex)
+
+```
+
+
+
+## Data basics
+Learn about how data works in `R` 
+```{r learnr_basics}
+
+rmarkdown::run("ex-data-basics/ex-data-basics.Rmd")
+
+```
+
+## Summarising data using R
+Learn about how data works in `R` 
+```{r learnr_summarise}
+
+rmarkdown::run("ex-data-summarise/ex-data-summarise.Rmd")
+
+```
+
+
+## Filtering data using R
+Learn about functions to filter data in `R` 
+```{r learnr_filter}
+
+rmarkdown::run("ex-data-filter/ex-data-filter.Rmd")
+
+```
+
+## Mutating (or transforming, or changing) data using R
+Learn about how to programatically change your data in `R` for example by combining columns, transforming them through addition (or whatever other function), etc.
+```{r learnr_mutate}
+
+rmarkdown::run("ex-data-mutate/ex-data-mutate.Rmd")
+
+```
+
+
+## MatchR
+
+This one is more interesting! In this one, you will have to address _questions_ using outputs from `R`. You don't have to write any code yourself.  Instead, you'll look at what the code outputs, and select the right code block to address the right question.
+
+```{r learnr_matchr}
+#You should have this directory locally, and so the first line will work.  If you want to check you have the most current version, uncomment the github lines and run that. 
+
+if (interactive()) {
+  rmarkdown::run("DSI-matchR/snippet_matchR_clustered.Rmd")
+  }
+
+## to get from github
+# if (interactive()) {
+#   shiny::runGitHub(repo = "learnr", 
+#           username = "sjgknight",
+#           ref = "master",
+#           subdir = "DSI-matchR/")
+#   }
+```
+
+## CleanR
+
+This one…is coming :-)
+
+```{r learnr_clearnr}
+
+
+```
+
+
+
+
+## More!
+If you like this style of tutorial, you might find some useful resources in:
+
+1. http://milton-the-cat.rocks/home/adventr.html#Contents_of_adventr 
+2. http://milton-the-cat.rocks/home/discovr.html#Contents_of_discovr
+
+If you're inspired and want to build some, or have ideas for useful tutorials or edits to the existing ones, please let me know!

@@ -1,0 +1,58 @@
+"0","pacman::p_load(tidyverse, openNLP, NLP, stringr, ggmap, WikidataR, ggplot2, psych, doBy, reshape2, knitr, lattice, learnr, dslabs, shiny, textdata, wordcloud, ggwordcloud, wordcloud2, kableExtra, RSentiment, sentimentr, tidytext, corrplot, rsconnect, nycflights13, Lahman, qdapRegex)
+"
+"2","Installing package into ‘C:/Users/125295/Documents/Box Sync/OneDrive - UTS/Documents/R/win-library/4.1’
+(as ‘lib’ is unspecified)
+"
+"2","Warning:"
+"2"," unable to access index for repository http://www.stats.ox.ac.uk/pub/RWin/bin/windows/contrib/4.1:
+  cannot open URL 'http://www.stats.ox.ac.uk/pub/RWin/bin/windows/contrib/4.1/PACKAGES'
+"
+"2","trying URL 'https://cran.rstudio.com/bin/windows/contrib/4.1/nycflights13_1.0.2.zip'
+"
+"2","Content type 'application/zip'"
+"2"," length 4510248 bytes (4.3 MB)
+"
+"2","downloaded 4.3 MB
+
+"
+"1","package ‘nycflights13’ successfully unpacked and MD5 sums checked
+"
+"1","
+"
+"1",""
+"1","The downloaded binary packages are in
+	C:\Users\125295_admin\AppData\Local\Temp\RtmpI9xRzW\downloaded_packages"
+"1",""
+"1","
+"
+"2","
+nycflights13 installed
+"
+"2","Installing package into ‘C:/Users/125295/Documents/Box Sync/OneDrive - UTS/Documents/R/win-library/4.1’
+(as ‘lib’ is unspecified)
+"
+"2","Warning:"
+"2"," unable to access index for repository http://www.stats.ox.ac.uk/pub/RWin/bin/windows/contrib/4.1:
+  cannot open URL 'http://www.stats.ox.ac.uk/pub/RWin/bin/windows/contrib/4.1/PACKAGES'
+"
+"2","trying URL 'https://cran.rstudio.com/bin/windows/contrib/4.1/Lahman_9.0-0.zip'
+"
+"2","Content type 'application/zip'"
+"2"," length 6615109 bytes (6.3 MB)
+"
+"2","downloaded 6.3 MB
+
+"
+"1","package ‘Lahman’ successfully unpacked and MD5 sums checked
+"
+"1","
+"
+"1",""
+"1","The downloaded binary packages are in
+	C:\Users\125295_admin\AppData\Local\Temp\RtmpI9xRzW\downloaded_packages"
+"1",""
+"1","
+"
+"2","
+Lahman installed
+"
