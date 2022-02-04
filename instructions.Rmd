@@ -1,11 +1,15 @@
 ---
-title: "R Notebook"
+title: "Welcome to the DSI learnR resources"
 output: html_notebook
 ---
 
 This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
 
 Try executing this chunk by clicking the *Run* button within the chunk (or the green triangle on the top left of the grey chunk), or by placing your cursor inside the grey box (which is a code chunk) and pressing *Ctrl+Shift+Enter*. 
+
+```{r}
+library(learnr)
+```
 
 
 ## Hello
@@ -18,6 +22,7 @@ To give you a simple idea of what these tutorials do on a local machine, let's r
 rmarkdown::run("hello/hello.Rmd")
 
 ```
+
 ## An important setup step do not skip over this heading!
 We also need to install some packages...this is not very elegant, but it goes over all the files in this project and looks for Rmds. Then it reads each line of the Rmds, and extracts references to library calls. I've already done this, so I've pasted the output into one line for you to run.  You can modify this if you don't want to install all the packages at once (it may take a while). 
 
@@ -31,8 +36,9 @@ We also need to install some packages...this is not very elegant, but it goes ov
 # boot <- 'if (!require("pacman")) install.packages("pacman")'
 # cat(paste0(boot, "\npacman::p_load(", paste(na.omit(unlist(packs)), collapse=", "), ")\n"))
 
-install.packages(pacman)
-library(packman)
+install.packages("pacman")
+
+library(pacman)
 
 pacman::p_load(tidyverse, openNLP, NLP, stringr, ggmap, WikidataR, ggplot2, psych, doBy, reshape2, knitr, lattice, learnr, dslabs, shiny, gradethis, textdata, wordcloud, ggwordcloud, wordcloud2, kableExtra, RSentiment, sentimentr, tidytext, corrplot, rsconnect, nycflights13, Lahman, qdapRegex)
 
@@ -40,7 +46,7 @@ pacman::p_load(tidyverse, openNLP, NLP, stringr, ggmap, WikidataR, ggplot2, psyc
 
 
 
-## Data basics
+## Data basics - week 4
 Learn about how data works in `R` 
 ```{r learnr_basics}
 
@@ -48,31 +54,22 @@ rmarkdown::run("ex-data-basics/ex-data-basics.Rmd")
 
 ```
 
-## Summarising data using R
-Learn about how data works in `R` 
-```{r learnr_summarise}
+## Filtering and mutating data - week 4
+Learn about how to do basic manipulation in `R`
 
-rmarkdown::run("ex-data-summarise/ex-data-summarise.Rmd")
+```{r learnr_explor}
 
-```
-
-
-## Filtering data using R
-Learn about functions to filter data in `R` 
-```{r learnr_filter}
-
-rmarkdown::run("ex-data-filter/ex-data-filter.Rmd")
+rmarkdown::run("ex-data-filters/ex-data-filter.Rmd")
 
 ```
 
-## Mutating (or transforming, or changing) data using R
-Learn about how to programatically change your data in `R` for example by combining columns, transforming them through addition (or whatever other function), etc.
-```{r learnr_mutate}
+## Learn some basic summarisation and visualisation approaches
 
-rmarkdown::run("ex-data-mutate/ex-data-mutate.Rmd")
+```{r}
+
+rmarkdown::run("ex-eda/ex-eda.Rmd")
 
 ```
-
 
 ## MatchR
 
@@ -94,22 +91,54 @@ if (interactive()) {
 #   }
 ```
 
+## Some more interactive tools to explore your data
+You might find it useful to play with the expandar tool, which walks through some basic analysis functions (not all of which will be relevant for your data) and lets you export the bits you want.
+
+The esquisse tool may also be a useful addon to use.
+
+```{r exploratory}
+pacman::p_load(ExPanDaR, esquisse)
+
+ExPanDaR::ExPanD(mtcars)
+
+esquisse::esquisser()
+
+```
+
+
+
 ## CleanR
 
-This one…is coming :-)
+There are two resources you might like to explore here
 
-```{r learnr_clearnr}
+Allison Horst's fantastic 'explore NA' interactive, which uses the `naniar` package to explore NAs in data, with a range of helpful visualisations (included with permission). 
+
+```{r learnr_na}
+
+rmarkdown::run("DSI-cleanR/explore-na-master/explore_na_tutorial.Rmd")
+
+```
+
+I've also started building an example of other common wrangling issues, it includes:
+
+1. string cleaning (whitespace, strings that should be NA, etc.)
+1. tidying variable types
+1. reconciling names using both more manual dplyr approach, and refinr
+1. 
+
+```{r learnr_cleanr}
 
 
 ```
 
 
 
-
 ## More!
+
 If you like this style of tutorial, you might find some useful resources in:
 
 1. http://milton-the-cat.rocks/home/adventr.html#Contents_of_adventr 
-2. http://milton-the-cat.rocks/home/discovr.html#Contents_of_discovr
 
 If you're inspired and want to build some, or have ideas for useful tutorials or edits to the existing ones, please let me know!
+
+You might also be interested in exploring https://psyteachr.github.io/webexercises/ 

@@ -1,0 +1,12 @@
+name: explore_na
+title: explore_na
+username:
+account: allisonhorst
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 2231549
+bundleId: 3104245
+url: https://allisonhorst.shinyapps.io/explore_na/
+when: 1588646205.55057
+asMultiple: FALSE
+asStatic: FALSE

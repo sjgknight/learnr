@@ -1,7 +1,7 @@
 ---
 title: "Hello, Tutorial!"
-author: "J.J. Allaire"
-date: "March 1st, 2017"
+author: "Simon Knight, modified from J.J. Allaire"
+date: "`r Sys.Date()`"
 output: learnr::tutorial
 runtime: shiny_prerendered
 # Do not index/display tutorial by setting `private: true`
@@ -12,6 +12,11 @@ description: >
 
 ```{r setup, include=FALSE}
 library(learnr)
+library(gradethis)
+gradethis::gradethis_setup()
+tutorial_options(exercise.checker = gradethis::grade_learnr)
+
+tut_reptitle <- "Hello world"
 ```
 
 The following code computes the answer to 1+1. Change it so it computes 2 + 2:
@@ -19,3 +24,54 @@ The following code computes the answer to 1+1. Change it so it computes 2 + 2:
 ```{r addition, exercise=TRUE}
 1 + 1
 ```
+
+```{r addition-solution}
+2 + 2
+```
+
+```{r addition-code-check}
+grade_code()
+```
+
+
+## Submit
+
+```{r context="setup", echo=F}
+# These functions save user inputs to (1) create a report, based on mattblackwell/qsslearnr, see R directory/sourced below, and (2) take this output and use learnrhash::encode_obj, this function(output) { base64enc::base64encode(memCompress(serialized(output, NULL), compress = "bzip2")) } - (see code for pretty). It serializes, compresses, and encodes.  
+
+source(here::here('r/submission.R'))
+source(here::here('r/utils.R'))
+
+submission_ui
+
+#see https://ladedu.com/these-are-the-direct-links-to-composing-emails-in-web-based-email-services/#Outlookcom
+#https://gist.github.com/miwebguy/2e805e343e0d434f06f2194b92b925d8 for detail
+#Alternatives might include [submitr](https://github.com/dtkaplan/submitr/issues), or some other [learnr event checker](https://pkgs.rstudio.com/learnr/articles/publishing.html#events), or [learnitdown](https://github.com/SciViews/learnitdown/blob/HEAD/R/learnitdown_learnr.R),
+# other email approaches - but I don't like these - include  [http://datawookie.github.io/emayili/](http://datawookie.github.io/emayili/) check mRpostman too
+# The rationale for this simple URL email string, is it's very easy, it doesn't involve sharing (or worrying about) keys, it can be used for locally run learnr activities
+
+```
+
+
+```{r context="server"}
+submission_server()
+
+learnrhash::encoder_logic()
+
+```
+
+```{r encode, echo=F}
+#learnrhash::encoder_ui(ui_before = learnrhash::default_ui("Link to be shared on canvas"))
+
+```
+
+```{r context="server", echo=F}
+#learnrhash::decoder_logic()
+
+```
+
+```{r decode, echo=F}
+#learnrhash::decoder_ui()
+
+```
+

@@ -1,12 +1,17 @@
 ---
 title: "Match the code snippet to questions on data!"
 author: "Simon Knight, sjgknight@gmail.com, modified by Shibani Antonette, antonette.shibani@gmail.com, and converted to a learnr exercise in 2021 by sjgk"
-output: learnr::tutorial
+date: "`r Sys.Date()`"
+output: 
+  learnr::tutorial:
+    progressive: true
+    allow_skip: true
+    df_print: default
 runtime: shiny_prerendered
 description: "Welcome to this learnr tutorial!"
 ---
 
-# Match the code to the question
+## Match the code to the question
 
 In this notebook, we've got a set of questions. 
 
@@ -16,8 +21,10 @@ Try and work out what the code chunk will output before you run it.
 
 The code snippets are designed so you could copy them into your own work to do  analyses (if you wanted to), and to demonstrate useful functions. 
 
-## Preliminaries
-Load packages.  If you don't have them installed already, you should uncomment (delete the #) the first line in the following code block (starting 'install.packages')
+### Preliminaries
+This chunk (which is hidden) loads some libraries and data. 
+
+If you're running this in 'interactive' mode, you don't need to do anything.  If you're not, you might need to install the libraries by uncommenting (delete the #) the first line in the following code block (starting 'install.packages')
 
 Once you've done that, you can test the file by using the 'knit' button (in RStudio).
 
@@ -25,14 +32,25 @@ Read more about R markdown and 'kniting' (rendering) documents https://rmarkdown
 
 To read documentation and view examples of usage, type ?function_name in console (E.g. ?hist) or search from the help bar in RStudio.
 
-### Load libraries and data
 First, we'll load the required packages, they come with a bunch of built in data, and we're going to use that here.
 
-```{r setup, echo=TRUE}
-tutorial_options(exercise.timelimit = 25) #the default is 30, I'm including this here as a reference. You can also set this per exercise in the chunk with exercise.timelimit=10.  This places a constraint on running arbitrary code.
+```{r setup, echo=FALSE, warning=F, message=F}
+#tutorial_options(exercise.timelimit = 25) #the default is 30, I'm including this here as a reference. You can also set this per exercise in the chunk with exercise.timelimit=10.  This places a constraint on running arbitrary code.
 #It would be sensible to also include RAppArmor
+library(learnr)
+library(gradethis)
+gradethis::gradethis_setup()
 
-knitr::opts_chunk$set(warning = FALSE)
+tutorial_options(exercise.checker = gradethis::grade_learnr)
+
+knitr::opts_chunk$set(warning = FALSE, cache=T, fig.width = 8, fig.height = 6)
+
+
+tut_reptitle <- "matchR"
+
+###############################
+###############################
+##############################
 #install.packages(c("psych","ggplot2","doBy","reshape2","knitr","lattice"))
   sh <- suppressPackageStartupMessages #To get rid os warning and other messages while loading the libraries
   sh(library(ggplot2))  #for graphs and plots
@@ -41,13 +59,11 @@ knitr::opts_chunk$set(warning = FALSE)
   #sh(library(reshape2)) #for data wrangling
   sh(library(knitr))    #for rendering markdown
   #sh(library(lattice))  #just to illustrate another histogram function 
-  library(learnr)
   library(dslabs)
   library(shiny) #shouldn't be necessary but...
  # install.packages("remotes")
   #remotes::install_github("rstudio-education/gradethis")
-  library(gradethis)
-  gradethis_setup()
+
   library(textdata)
   library(wordcloud) #ggwordcloud could also be used to create comparison.cloud but for now I'll keep 
   library(ggwordcloud) #This library is interesting, it does the same things as wordcloud + wordcloud2 combined, and is in the ggplot2 family which means we can do all those things too
@@ -63,9 +79,12 @@ knitr::opts_chunk$set(warning = FALSE)
   
 #library(rsconnect)
 #deployApp(appName = "Snippet_matchR)
-#################################################################
+##############################################################
 #############LOAD DATA HERE######################################
-#################################################################
+##############################################################
+
+if(!file.exists("matchr.RData")) {
+  
 #trump_tweets <- data("trump_tweets")
 data("trump_tweets")
 ##############AND we're going to do some tidying up #############
@@ -115,8 +134,17 @@ tt_senti3 <- tweet_words %>%
 trump_tweets <- left_join(trump_tweets, tt_senti2, by = "id_str") 
 trump_tweets <- left_join(trump_tweets, tt_senti3, by = "id_str") 
 
+#write_csv(trump_tweets,"trump_tweets.csv")
+#write_csv(tweet_words,"tweet_words.csv")
+save(trump_tweets,tweet_words, file = "matchr.RData")
+
 rm(tt_senti2,tt_senti3)
 
+} else {
+  #trump_tweets <- read_csv("trump_tweets.csv")
+  #tweet_words <- read_csv(tweet_words,"tweet_words.csv")
+  load("matchr.RData")
+}
 #table(tweet_words %>% inner_join(get_sentiments("nrc")) %>% select(sentiment)) 
 #afinn is also pretty cool
 
@@ -176,10 +204,10 @@ trump_tweets %>%
   stat_summary(
     aes(label = round(stat(exp(y)), 1)),
     geom = "label_repel", 
-    fun.y = function(y) { o <- boxplot.stats(y)$out; if(length(o) == 0) NA else o },
+    fun = function(y) { o <- boxplot.stats(y)$out; if(length(o) == 0) NA else o },
     position = position_nudge_repel()
   ) + 
-    stat_summary(fun.y = mean, geom="point", shape=5, size=4) #show the mean
+    stat_summary(fun = mean, geom="point", shape=5, size=4) #show the mean
 
     #position=position_jitter()
     #hjust = -1
@@ -190,7 +218,9 @@ trump_tweets %>%
 
 ```
 
-# Task Explanation
+
+
+## Task Explanation
 
 We're going to look at the trump twitter data
 
@@ -198,16 +228,19 @@ I've put some questions below - what other questions can you think of from this 
 
 In some of the examples below, it's not about "right" and "wrong" answers, so much as "more" and "less" informative ones.  In other cases, there is a clear wrong answer :-). In both, we can discuss this! 
 
-## Data Exploration
+
+### Data Exploration
 First, let's just look at the first 10 rows of the dataset to see what it includes.
 You can change the below to tail(trump_tweets) or trump_tweets[1:100,], etc. 
 Use the arrow in the top row to navigate through the columns.
-```{r explore_datasets, exercise = TRUE}
+```{r explore_datasets, exercise = TRUE, exercise.lines=2}
 #View the first 10 rows of the dataset
 head(trump_tweets)
 ```
 
-## Demonstrating a Table / Data Overview
+
+
+### Demonstrating a Table / Data Overview
 Let's just take a look at some overall summary stats before we get into the visualisation. These are useful for a range of reasons, one of which is they can tell us about the shape of the data. Read about a part of that through measures of skew and kurtosis here: https://codeburst.io/2-important-statistics-terms-you-need-to-know-in-data-science-skewness-and-kurtosis-388fef94eeaa
 
 ```{r Summary of RT and Favs}
@@ -218,13 +251,17 @@ trump_tweets %>%
   kable(.,"html")
 
 ```
-## Some demonstration
+
+
+### Some demonstration
 
 An example (a pretty ugly one, using base R) of a plot is in the code. We will see how this can be improved later. 
 One easy fix we'll apply later is to rotate the x axis to show the number, not the notation. Unfortunately base R doesn't let us do that easily.
-```{r basic histograms, echo=TRUE}
+```{r basic histograms, echo=TRUE, eval=T}
 hist(trump_tweets$favorite_count)
 ```
+
+###  
 
 We're also going to quickly demonstrate how part of this page works. The page is built on an r package called `learnr` which lets me insert exercises that you can run yourselves, and lets me check your answers! Cool right?
 
@@ -236,7 +273,6 @@ So `y <- 3*3` assigns the value `9` to the variable `y`
 Delete the code in the box to do this; the checker looks at your code rather than the output in this case.
 ```{r example, exercise = TRUE}
 1+1
-
 ```
 
 ```{r example-solution}
@@ -250,9 +286,11 @@ grade_code()
 
 We've made it easy below. You don't need to *write* your own code, just copy and paste our examples into the correct slot!
 
-# The questions - copy the code chunk(s) that best addresses it under each question
 
-## Q1. What is the relationship between retweets and likes?
+## The questions - copy the code chunk(s) that best addresses it under each question
+
+### Q1
+*What is the relationship between retweets and likes?*
 Delete the wrong answers, leaving only 1 block (you can view the outputs for every block pre-rendered, or run this block)
 ```{r relationship, exercise = TRUE, exercise.lines=30 }
 ################### BLOCK 8 ########################
@@ -295,16 +333,19 @@ grade_code()
 ```
 
 
-## Q2. What source has the highest sentiment?
+
+
+### Q2
+*What source has the highest sentiment?*
 For this one, we can see four tweets in the same range, what are the values and their content (the tweet text)?
-```{r max, exercise = TRUE, exercise.lines=30 }
+```{r max, exercise = TRUE, exercise.lines=30, eval = T}
 ########################BLOCK 13 ############################
 trump_tweets %>% 
   filter(source %in% c("Twitter for Android","Twitter for iPhone")) %>% #filter to the two biggest sources
   ggplot(aes(x = factor(source), y = ave_sentiment)) +  #note, you'll often see , fill = factor(variable) here too, but unless it is adding additional information my view is colour is just visual noise, the axes already label the plots, adding colour doesn't add new information.
   geom_boxplot() +
   stat_summary(
-    fun.y = mean, geom="point", shape=5, size=4)
+    fun = mean, geom="point", shape=5, size=4)
 ################### 
 trump_tweets %>% 
   filter(source == "Twitter for Android") %>%
@@ -330,7 +371,7 @@ trump_tweets %>%
   ggplot(aes(x = factor(source), y = ave_sentiment)) +  #note, you'll often see , fill = factor(variable) here too, but unless it is adding additional information my view is colour is just visual noise, the axes already label the plots, adding colour doesn't add new information.
   geom_boxplot() +
   stat_summary(
-    fun.y = mean, geom="point", shape=5, size=4)
+    fun = mean, geom="point", shape=5, size=4)
 
 trump_tweets %>% 
   filter(source == "Twitter for Android") %>%
@@ -341,7 +382,6 @@ trump_tweets %>%
   filter(source == "Twitter for iPhone") %>%
   slice_max(ave_sentiment, n = 1) %>%
   select(text,retweet_count,favorite_count,created_at,source,ave_sentiment) #uses dplyr slice function, and selects the columns we're interested in
-
 ```
 
 ```{r max-code-check}
@@ -358,12 +398,13 @@ grade_code()
 #   filter(source == "Twitter for iPhone") %>%
 #   slice_min(ave_sentiment, n = 1) %>%
 #   select(text,retweet_count,favorite_count,created_at,source,ave_sentiment) #uses dplyr slice function, and selects the columns we're interested in
-
 ```
 
 
-## Q3. How do iphone and android compare in terms of number of words?
-```{r summary1, exercise = TRUE, exercise.lines=30 }
+
+### Q3
+*How do iphone and android compare in terms of number of words?*
+```{r summary1, exercise = TRUE, exercise.lines=39, eval = T}
 ################### BLOCK 5 ########################
 ggplot(trump_tweets %>% filter(source %in% c("Twitter for Android","Twitter for iPhone")), 
        aes(x = source, y = word_count)) + 
@@ -377,7 +418,7 @@ trump_tweets %>%
   ggplot(aes(x = factor(source), y = word_count)) +  #note, you'll often see , fill = factor(variable) here too, but unless it is adding additional information my view is colour is just visual noise, the axes already label the plots, adding colour doesn't add new information.
   geom_boxplot() +
   stat_summary(
-    fun.y = mean, geom="point", shape=5, size=4)
+    fun = mean, geom="point", shape=5, size=4)
 ############
 kable(table(trump_tweets$source), output = "html")
 ############
@@ -393,7 +434,7 @@ trump_tweets %>%
   ggplot(aes(x = factor(source), y = word_count)) +  #note, you'll often see , fill = factor(variable) here too, but unless it is adding additional information my view is colour is just visual noise, the axes already label the plots, adding colour doesn't add new information.
   geom_boxplot() +
   stat_summary(
-    fun.y = mean, geom="point", shape=5, size=4) +
+    fun = mean, geom="point", shape=5, size=4) +
   geom_jitter()
 ############
 kable(table(trump_tweets$source), output = "html")
@@ -412,7 +453,7 @@ trump_tweets %>%
   ggplot(aes(x = factor(source), y = word_count)) +  #note, you'll often see , fill = factor(variable) here too, but unless it is adding additional information my view is colour is just visual noise, the axes already label the plots, adding colour doesn't add new information.
   geom_boxplot() +
   stat_summary(
-    fun.y = mean, geom="point", shape=5, size=4)
+    fun = mean, geom="point", shape=5, size=4)
 
 kable(table(trump_tweets$source), output = "html")
 
@@ -421,7 +462,6 @@ ggplot(trump_tweets %>% filter(source %in% c("Twitter for Android","Twitter for 
   geom_histogram(alpha = .5, position = 'identity',  
                  aes(y = ..density..*width), show.legend = FALSE) + 
   facet_grid (. ~ source) ##..density..*width shows the proportion effectively normalised by group (iphone and android).  #note use of 'density' because we have unequal  counts in each dataset, and this lets us understand the data as a proportion which accounts for the unequal samples Alpha is the transparency level.
-
 ```
 
 ```{r summary1-code-check}
@@ -431,11 +471,13 @@ grade_code()
 #Distractors are block 5, and 1
 
 #Note, showing the boxplots and the variation in the underlying data (and size) is the interest here. Jitter is often useful to show the actual underlying data, but here while it gives us insight into the smaller sample for tweetdeck there are too many points for it to be meaningful. 
-
 ```
 
-## Q4. What NRC sentiments occur in each source ?
-```{r props, exercise = TRUE, exercise.lines=30 }
+
+
+### Q4
+*What NRC sentiments occur in each source ?*
+```{r props, exercise = TRUE, exercise.lines=47, eval = T }
 ################### BLOCK 9 ########################
 # Scatterplot
 trump_tweets %>%
@@ -510,11 +552,15 @@ ggplot(aes(x=source)) +
 grade_code()
 #Block 12
 #Distractors are blocks 9 and 11
-#You might explore tests of association here. These allow us to investigate associations between categories (e.g., between tweet-source, and tweet-emotion incidence) 
-
+#You might explore tests of association here. These allow us to investigate associations between categories (e.g., between tweet-source, and tweet-emotion incidence)
 ```
-## Q5. How are NRC sentiment, source, and RTs associated? 
-```{r association, exercise = TRUE, exercise.lines=30 }
+
+
+
+### Q5
+*How are NRC sentiment, source, and RTs associated? *
+
+```{r association, exercise = TRUE, exercise.lines=41, eval = T }
 ################### BLOCK 9 ########################
 # Scatterplot
 trump_tweets %>%
@@ -533,6 +579,7 @@ trump_tweets %>%
   cor() %>%
   corrplot()
 ################### BLOCK 3 ########################
+print("I am a blank chunk")
 #Sometimes, the best way to address a question at this stage of the investigation is to break it down
 #In this case, you've looked at sentiment by source, and you've looked at RTs by source.
 #You could also look at RT by source, to investigate at a descriptive level
@@ -540,13 +587,13 @@ trump_tweets %>%
 #But, at this stage you're getting into the need to do different kinds of analysis, but there's still more value to get from sticking to descriptives.
 #To use this block, copy all this commented text
 ################### BLOCK 10 ########################
-Boxplots by source and sentiment 
+#Boxplots by source and sentiment 
 trump_tweets %>% 
   filter(source %in% c("Twitter for Android","Twitter for iPhone","TweetDeck","Twitter Web Client")) %>% #filter to the  biggest sources
   ggplot(aes(x = factor(sentiment_nrc), y = retweet_count)) + 
   geom_boxplot() +
   stat_summary(
-    fun.y = mean, geom="point", shape=5, size=4) +
+    fun = mean, geom="point", shape=5, size=4) +
   facet_grid(. ~ source) +
   theme(axis.text.x = element_text(angle = 90))
 ################### BLOCK 4 ########################
@@ -556,9 +603,11 @@ trump_tweets %>% filter(source %in% c("Twitter for Android","Twitter for iPhone"
   ggplot(aes(x = sentiment_nrc, source)) +
   geom_tile(aes(fill = retweet_count)) +
   theme(axis.text.x = element_text(angle = 90))
+
 ```
 
 ```{r association-solution}
+print("I am a blank chunk")
 #Sometimes, the best way to address a question at this stage of the investigation is to break it down
 #In this case, you've looked at sentiment by source, and you've looked at RTs by source.
 #You could also look at RT by source, to investigate at a descriptive level
@@ -569,18 +618,30 @@ trump_tweets %>% filter(source %in% c("Twitter for Android","Twitter for iPhone"
 ```
 
 ```{r association-code-check}
-grade_this_code(correct = "That's right!  There are ways you could explore this more, but crucially you should consider why you're conducting any particular analysis, and what your rationale is for treating the data the way you have. For example, does it really make sense to treat the emotion data as an interval level numeric variable for a correlation? (It seems to me to be at most ordinal, but likely nominal level data). You can see a couple of other insights here ")
+grade_this_code(
+  correct = "That's right!  There are ways you could explore this more, but crucially you should consider why you're conducting any particular analysis, and what your rationale is for treating the data the way you have. For example, does it really make sense to treat the emotion data as an interval level numeric variable for a correlation? (It seems to me to be at most ordinal, but likely nominal level data). You can see a couple of other insights here ")
+
 #Block 3 (which is blank)
 #Distractors are a bunch of boxplots in block 10, heatmap block 4, and scatterplot + corplot block 9
 #on feedback note the below
 #Boxplots by source and sentiment 
 
+
+```
+
+<details>
+
+<summary> 
+click here for another couple of analyses of this data
+</summary>
+
+```{r}
   trump_tweets %>% 
   filter(source %in% c("Twitter for Android","Twitter for iPhone","TweetDeck","Twitter Web Client") & !is.na(sentiment_nrc)) %>% #filter to the  biggest sources
   ggplot(aes(x = factor(sentiment_nrc), y = retweet_count)) + 
   geom_boxplot() +
   stat_summary(
-    fun.y = mean, geom="point", shape=5, size=4) +
+    fun = mean, geom="point", shape=5, size=4) +
   theme(axis.text.x = element_text(angle = 90))
 
 
@@ -591,9 +652,11 @@ trump_tweets %>%
   kable(digits=2, "html")
 ```
 
+</details>
 
-## Q6. What kind of language do Trump's tweets use?
-```{r words, exercise = TRUE, exercise.lines=30 }
+### Q6
+*What kind of language do Trump's tweets use?*
+```{r words, exercise = TRUE, exercise.lines=21, eval = T }
 ################### BLOCK 15 ########################
 wc <- tweet_words %>%
   anti_join(stop_words) %>%
@@ -601,10 +664,6 @@ wc <- tweet_words %>%
   slice_max(n, n = 500)
 ggwordcloud2(wc, color = "random-dark", shape = "star")
 ################### BLOCK 16 ########################
-wc <- tweet_words %>%
-  anti_join(stop_words) %>%
-  count(word) %>%
-  slice_max(n, n = 500)
 #wordcloud2(wc, color = "black", maxRotation = 0, minRotation = 0, shape = "diamond") #diamond is just a square
 #wordcloud - different package - makes simple ones too, and has an inbuilt function for comparison.  We'll do that for 2 groups positive and negative words (but you could use more)
 tweet_words %>%
@@ -618,14 +677,6 @@ tweet_words %>%
 ```
 
 ```{r words-solution}
-wc <- tweet_words %>%
-  anti_join(stop_words) %>%
-  count(word) %>%
-  slice_max(n, n = 2000)
-
-#wordcloud2(wc, color = "black", maxRotation = 0, minRotation = 0, shape = "diamond") #diamond is just a square
-
-#wordcloud - different package - makes simple ones too, and has an inbuilt function for comparison.  We'll do that for 2 groups positive and negative words (but you could use more)
 tweet_words %>%
   inner_join(get_sentiments("bing")) %>%
   count(word, sentiment, sort = TRUE) %>%
@@ -640,6 +691,15 @@ tweet_words %>%
 grade_code()
 #Correct is block 16, distractor 15
 
+```
+
+<details>
+
+<summary>
+Click here for some extra insight into those tweets
+</summary>
+
+```{r extra_words, eval=T, warning=F}
 android_iphone_or <- tweet_words %>%
   count(word, source) %>%
   pivot_wider(names_from = "source", values_from = "n", values_fill = 0) %>%
@@ -657,8 +717,39 @@ android_iphone_or %>% filter(Android+iPhone > 100) %>%
 
 ```
 
-# Code blocks
-## Block 1
+</detail>
+
+## Submit
+
+```{r context="setup", echo=F}
+# These functions save user inputs to (1) create a report, based on mattblackwell/qsslearnr, see R directory/sourced below, and (2) take this output and use learnrhash::encode_obj, this function(output) { base64enc::base64encode(memCompress(serialized(output, NULL), compress = "bzip2")) } - (see code for pretty). It serializes, compresses, and encodes.  
+
+source(here::here('r/submission.R'))
+source(here::here('r/utils.R'))
+
+submission_ui
+
+#see https://ladedu.com/these-are-the-direct-links-to-composing-emails-in-web-based-email-services/#Outlookcom
+#https://gist.github.com/miwebguy/2e805e343e0d434f06f2194b92b925d8 for detail
+#Alternatives might include [submitr](https://github.com/dtkaplan/submitr/issues), or some other [learnr event checker](https://pkgs.rstudio.com/learnr/articles/publishing.html#events), or [learnitdown](https://github.com/SciViews/learnitdown/blob/HEAD/R/learnitdown_learnr.R),
+# other email approaches - but I don't like these - include  [http://datawookie.github.io/emayili/](http://datawookie.github.io/emayili/) check mRpostman too
+# The rationale for this simple URL email string, is it's very easy, it doesn't involve sharing (or worrying about) keys, it can be used for locally run learnr activities
+
+```
+
+
+```{r context="server"}
+submission_server()
+
+learnrhash::encoder_logic()
+
+```
+
+
+## Code blocks
+This is just all the code blocks from above.
+
+### Block 1
 ```{r ggplot summarystats}
 #First version  - sometimes it's useful to think about what information is included in different representations
 trump_tweets %>% 
@@ -666,7 +757,7 @@ trump_tweets %>%
   ggplot(aes(x = factor(source), y = word_count)) +  #note, you'll often see , fill = factor(variable) here too, but unless it is adding additional information my view is colour is just visual noise, the axes already label the plots, adding colour doesn't add new information.
   geom_boxplot() +
   stat_summary(
-    fun.y = mean, geom="point", shape=5, size=4) +
+    fun = mean, geom="point", shape=5, size=4) +
   geom_jitter()
 
 kable(table(trump_tweets$source), output = "html")
@@ -679,7 +770,7 @@ ggplot(trump_tweets %>%
 ```
 
 
-## Block 2 
+### Block 2 
 ```{r bars 1}
 ggplot(trump_tweets, 
        aes(x = source, y = ave_sentiment)) + 
@@ -688,7 +779,7 @@ ggplot(trump_tweets,
   theme(axis.text.x = element_text(angle = 90))
 ```
 
-## Block 3
+### Block 3
 ```{r blank}
 
 #Sometimes, the best way to address a question at this stage of the investigation is to break it down
@@ -700,7 +791,7 @@ ggplot(trump_tweets,
 #To use this block, copy all this commented text
 ```
 
-## Block 4 - this one's a freebie, it doesn't answer any of the questions well 
+### Block 4 - this one's a freebie, it doesn't answer any of the questions well 
 ```{r ggplot heatmap}
 #You can have this one for free - heatmaps can be useful sometimes, but not like this. 
 
@@ -713,7 +804,7 @@ trump_tweets %>% filter(source %in% c("Twitter for Android","Twitter for iPhone"
 
 ```
 
-## Block 5
+### Block 5
 ```{r ggplot barchart}
 
 ggplot(trump_tweets %>% filter(source %in% c("Twitter for Android","Twitter for iPhone")), 
@@ -724,7 +815,7 @@ ggplot(trump_tweets %>% filter(source %in% c("Twitter for Android","Twitter for 
 
 ```
 
-## Block 6
+### Block 6
 ```{r ggplot summarystats-2}
 
 #Second version - sometimes it's useful to think about what information is included in different representations
@@ -733,7 +824,7 @@ trump_tweets %>%
   ggplot(aes(x = factor(source), y = word_count)) +  #note, you'll often see , fill = factor(variable) here too, but unless it is adding additional information my view is colour is just visual noise, the axes already label the plots, adding colour doesn't add new information.
   geom_boxplot() +
   stat_summary(
-    fun.y = mean, geom="point", shape=5, size=4)
+    fun = mean, geom="point", shape=5, size=4)
 
 kable(table(trump_tweets$source), output = "html")
 
@@ -746,7 +837,7 @@ ggplot(trump_tweets %>% filter(source %in% c("Twitter for Android","Twitter for 
 
 ```
 
-## Block 7
+### Block 7
 ```{r ggplot line example}
 
 trump_tweets %>% 
@@ -760,14 +851,14 @@ trump_tweets %>%
 
 ```
 
-## Block 8
+### Block 8
 ```{r ggplot scatterplot example}
 ggplot(trump_tweets, aes(x = retweet_count, y = favorite_count)) +
   geom_point(shape = 1) 
 cor.test(trump_tweets$retweet_count,trump_tweets$favorite_count)
 ```
 
-## Block 9
+### Block 9
 ```{r ggplot scatterplot2}
 # Scatterplot
 trump_tweets %>%
@@ -790,7 +881,7 @@ trump_tweets %>%
 
 ```
 
-## Block 10
+### Block 10
 ```{r ggplot side-by-side boxplot}
 #Boxplots by source and sentiment 
 trump_tweets %>% 
@@ -798,13 +889,13 @@ trump_tweets %>%
   ggplot(aes(x = factor(sentiment_nrc), y = retweet_count)) + 
   geom_boxplot() +
   stat_summary(
-    fun.y = mean, geom="point", shape=5, size=4) +
+    fun = mean, geom="point", shape=5, size=4) +
   facet_grid(. ~ source) +
   theme(axis.text.x = element_text(angle = 90))
 
 ```
 
-## Block 11
+### Block 11
 ```{r ggplot summarystats2}
 # Stacked
 trump_tweets %>% 
@@ -815,7 +906,7 @@ trump_tweets %>%
 
 ```
 
-## Block 12
+### Block 12
 ```{r barchart}
 # Stacked + percent - You might decide to remove tweetdeck too given it's a much smaller sample
 trump_tweets %>% 
@@ -842,14 +933,14 @@ ggplot(aes(x=source)) +
 #surprise is sometimes positive or negative with interactive https://saifmohammad.com/WebPages/NRC-Emotion-Lexicon.htm
 ```
 
-## Block 13
+### Block 13
 ```{r boxplot2}
 trump_tweets %>% 
   filter(source %in% c("Twitter for Android","Twitter for iPhone")) %>% #filter to the two biggest sources
   ggplot(aes(x = factor(source), y = ave_sentiment)) +  #note, you'll often see , fill = factor(variable) here too, but unless it is adding additional information my view is colour is just visual noise, the axes already label the plots, adding colour doesn't add new information.
   geom_boxplot() +
   stat_summary(
-    fun.y = mean, geom="point", shape=5, size=4)
+    fun = mean, geom="point", shape=5, size=4)
 
 
 trump_tweets %>% 
@@ -864,7 +955,7 @@ trump_tweets %>%
     
 ```
 
-## Block 14
+### Block 14
 ```{r barchart2}
 #separate bars
 trump_tweets %>% 
@@ -875,7 +966,7 @@ trump_tweets %>%
   
 ```
 
-## Block 15
+### Block 15
 ```{r wordcloud}
 wc <- tweet_words %>%
   anti_join(stop_words) %>%
@@ -885,7 +976,7 @@ wc <- tweet_words %>%
 ggwordcloud2(wc, color = "random-dark", shape = "star")
 ```
 
-## Block 16
+### Block 16
 ```{r wordcloud2}
 wc <- tweet_words %>%
   anti_join(stop_words) %>%
@@ -906,7 +997,7 @@ tweet_words %>%
 
 ```
 
-## Block 17
+### Block 17
 ```{r}
 #We'll compare the bottom 25% of retweet counts to the rest by average favourites
 ggplot(trump_tweets %>% mutate(retweeted = ifelse(retweet_count > quantile(retweet_count, .25), "Y", "N")), 

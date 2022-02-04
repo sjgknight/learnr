@@ -1,0 +1,6 @@
+col1,col2,col3,col4
+1,This text goes into row 1,odd,10
+2,2,even,20
+3,"even if row two is a number, the column is character",odd,30
+4,Row 3,even,40
+5,more text,odd,50

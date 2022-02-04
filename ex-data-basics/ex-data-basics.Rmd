@@ -1,5 +1,7 @@
 ---
 title: "Data basics"
+author: Lightly edited from example in "`r citation('learnr')`"
+date: "`r Sys.Date()`"
 output: 
   learnr::tutorial:
     progressive: true
@@ -7,15 +9,18 @@ output:
     df_print: default
 runtime: shiny_prerendered
 description: >
-  Learn about the base data types in R. Explore R's data frames, and learn how
-  to interact with data frames and their columns.
+  Learn about the base data types in R. Explore R's data frames, and learn how   to interact with data frames and their columns.
 ---
 
 ```{r setup, include=FALSE}
 library(learnr)
 library(tidyverse)
 library(nycflights13)
-tutorial_options(exercise.timelimit = 60)
+library(gradethis)
+gradethis::gradethis_setup()
+tutorial_options(exercise.checker = gradethis::grade_learnr)
+
+tut_reptitle <- "Data Basics"
 ```
 
 ## Welcome
@@ -52,8 +57,13 @@ mpg <- as.data.frame(mpg)
 **Hint:** Type `mpg` and then click the Submit Answer button.
 </div>
 
-```{r mpg-check, echo = FALSE}
-# checking code
+```{r mpg-solution}
+mpg
+```
+
+
+```{r mpg-code-check, echo = FALSE}
+grade_code()
 ```
 
 ### A note about mpg
@@ -64,6 +74,32 @@ The code above worked because I've already loaded the ggplot2 package for you in
 2. Load ggplot2 with the `library(ggplot2)` command
 
 After that, you will be able to access any object in ggplot2—including `mpg`—until you close R. 
+
+### But my data is on my computer not in the package! 
+
+Normally, we are not working with data from a package directly. Instead, we want to import data either by reading a file, or sometimes by steaming from an API. 
+
+While both base `R` and various packages can read a wide range of file types, and connect easily to APIs, the easiest and most common way to import data is using `read_csv` or `read.csv`. The second is built into `R`, but the `dplyr` `read_csv` beats it for speed and default behaviours. 
+
+```{r readcsv, exercise = TRUE}
+#we can write a csv from R
+x <- tibble(
+  col1 = c(1,2,3,4,5),
+  col2 = c("This text goes into row 1",2,"even if row two is a number, the column is character","Row 3","more text"),
+  col3 = as.factor(c("odd","even","odd","even","odd")),
+  col4 = col1 * 10
+  )
+
+x
+
+write_csv(file = "sample.csv", x)
+
+#you can read a csv like this. Remember, if you want to use it anywhere you need to assign it, e.g.:
+# my_csv <- read_csv("sample.csv")
+
+read_csv("sample.csv")
+```
+
 
 ###  
 
@@ -83,7 +119,8 @@ You can learn more about `mpg` by opening its help page. The help page will expl
 **Hint:** Type `?mpg` and then click the Submit Answer button.
 </div>
 
-```{r help-check, echo = FALSE}
+```{r help-code-check, echo = FALSE}
+?mpg
 # checking code
 ```
 
@@ -203,7 +240,51 @@ question("Which types of variables does `flights` contain? Check all that apply.
 )
 ```
 
+### Beyond ?
+Another useful feature of R it's useful for you to be aware of is how you can access information on functions.
+
+Code completion is one piece of help. If we type `dplyr::` we get all the functions exported from the package `dplyr`.  (Similarly if we type `mtcars$` we can see the variables selectable in an object).
+
+Sometimes you'll see that instead of using `library(dplyr)` to load all the functions from a package, they'll instead call specific functions `dplyr::mutate`. 
+
+Change the below to find the function that lets you summarise by a group in dplyr.
+```{r completion, exercise=T}
+dplyr::
+
+```
+
+Sometimes we might also want to find functions that _are not_ exported from the library. One way you can explore these is by using `:::` instead. See how this shows the smaller functions that make up the pieces of `dplyr` you use directly?
+This can be especially useful if you need to create your own function based on one of these.
+
+```{r}
+dplyr:::
+
+```
+
+
 ### Congratulations
 
 You've met R's basic table structures—data frames and tibbles; and you have learned how to inspect their contents. When you are ready, go on to the next tutorial to begin visualizing your data.
 
+
+```{r context="setup", echo=F}
+# These functions save user inputs to (1) create a report, based on mattblackwell/qsslearnr, see R directory/sourced below, and (2) take this output and use learnrhash::encode_obj, this function(output) { base64enc::base64encode(memCompress(serialized(output, NULL), compress = "bzip2")) } - (see code for pretty). It serializes, compresses, and encodes.  
+
+source(here::here('r/submission.R'))
+source(here::here('r/utils.R'))
+
+submission_ui
+
+#see https://ladedu.com/these-are-the-direct-links-to-composing-emails-in-web-based-email-services/#Outlookcom
+#https://gist.github.com/miwebguy/2e805e343e0d434f06f2194b92b925d8 for detail
+
+
+```
+
+
+```{r context="server"}
+submission_server()
+
+learnrhash::encoder_logic()
+
+```

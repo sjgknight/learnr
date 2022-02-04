@@ -1,0 +1,470 @@
+---
+title: "Data cleaning in R"
+author: "Simon Knight, sjgknight@gmail.com, modified to learnr in 2021"
+date: "`r Sys.Date()`"
+output: learnr::tutorial
+runtime: shiny_prerendered
+description: "Welcome to this learnr tutorial!"
+---
+
+## Data cleaning and wrangling in R
+
+Data looks like this, in nice organised grids, right?
+
+`r fontawsome::fa("table")`
+
+Well...
+
+<iframe src="https://docs.google.com/spreadsheets/d/e/2PACX-1vSpqGBRQcgjK5Zsxe4_VteHu4Ivztj0aKpA1jH_MeNQJwxmglg1lma4cOwb_6_i0qeSJ4g3Z_kDq8P8/pubhtml?widget=true&amp;headers=false"></iframe>
+
+That's a bit of an odd case, but the issues in that spreadsheet are all things I have seen in spreadsheets.
+
+If it happens in small data, why do you think these issues don't also exist in larger datasets?
+
+
+> This learnr activity steps through a set of tasks adapted from an OpenRefine tutorial (see https://goo.gl/mQC7oe). I re-wrote parts of this in a combination of base R and other packages (including dplyr) some time ago. This version is significantly better, it's tidier in every way. My advice is:
+
+* **If you care more about techniques for data cleaning and wrangling than coding** use the pure OpenRefine version. OpenRefine is a fantastic graphical interface for these tasks, and I think incredibly valuable for many organisations.
+* **If you want to learn some R alongside cleaning and wrangling** this is a good version for you! 
+* **If you want to use OpenRefine _from_ R** you should check out the `rrefine` package, and use whatever version you want.
+
+^[This resource is adapted from:
+1.	http://enipedia.tudelft.nl/wiki/OpenRefine_Tutorial#Clean_up_country_names (under a CC-By-SA 3.0 license) C.B.Davis, A. Chmieliauskas, G.P.J. Dijkema, I. Nikolic (2015), Enipedia, http://enipedia.tudelft.nl, Energy & Industry group, Faculty of Technology, Policy and Management, TU Delft, Delft, The Netherlands. 
+2.	And http://schoolofdata.org/handbook/recipes/cleaning-data-with-refine/ 3. Knight, S., (2016). Cleaning Data with Refine, at see https://goo.gl/mQC7oe]
+
+
+******
+
+## Cleaning Data in R: A learnR tutorial
+
+First we're going to load some packages and a dataset.
+
+```{r setup}
+pacman::p_load(tidyverse, 
+               naniar,
+               refinr,
+               tidygeocoder)
+               
+#rrefine includes a nice simple example of messy data
+#lateformeeting
+               
+unis <- read_csv("https://goo.gl/EJxa20")
+
+```
+
+## Exploring Data
+
+We can explore parts of the data like this
+
+```{r}
+#glimpse gives overview
+glimpse(unis)
+
+#slice_head shows top set, slice_tail bottom, or sample random
+slice_sample(unis, n = 10)
+
+#if we wanted to show row 580, we use
+unis %>% 
+  slice(580)
+
+#we can also sort, and we often want our data kept that way, so we'll assign the sorted version
+unis <- unis %>%
+  arrange(country, university) 
+
+#and just to demonstrate
+unis %>% 
+  slice(580)
+
+```
+
+One other thing you might notice, there are a lot of duplicates here. One way to collapse some of them at least is
+```{r}
+unis <- unique(unis)
+
+```
+
+
+============================================================
+
+## NAs, encoding, data types, etc. in the endowment 
+
+### Dealing with NAs
+
+```{r}
+#First, we'll look at missing
+naniar::miss_var_summary(unis)
+
+naniar::vis_miss(unis)
+
+
+```
+
+Ok that's not terrible, let's take a closer look at some things:
+
+1. Country
+1. University
+1. numFaculty
+1. numUndergrad
+
+We could also look at endowment (should be a number), and established (should be a date), but we'll save that. 
+
+```{r}
+
+unis %>% select(country) %>% table() 
+
+```
+
+Ah...so, we can see at least one missing value. And some other issues.
+We can replace that , with nothing, but we can actually find out what that value should be so should probably use a meaningful replacement.
+```{r}
+unis <- unis %>% mutate(
+  country = str_replace(country, ",", "")
+)
+
+```
+
+Another thing we can do is reconcile names using string distances. There are a lot of ways to do this, and unfortunately which makes sense will depend on your data and the specific issues. That is, some things can be automated, but some things may need human eyes. 
+
+The `refinr` hepls do this in a semi-automated way, and helpful one of the examples is for unis! 
+```{r}
+
+x <- c(
+  "Clemsson University", 
+  "university-of-clemson", 
+  "CLEMSON", 
+  "Clem son, U.", 
+  "college, clemson u", 
+  "M.I.T.", 
+  "Technology, Massachusetts' Institute of", 
+  "Massachusetts Inst of Technology", 
+  "UNIVERSITY:  mit"
+)
+
+ignores <- c("university", "college", "u", "of", "institute", "inst")
+
+x_refin <- x %>% 
+  refinr::key_collision_merge(ignore_strings = ignores) %>% 
+  refinr::n_gram_merge(ignore_strings = ignores)
+
+# Create df for comparing the original values to the edited values.
+# This is especially useful for larger input vectors.
+inspect_results <- data_frame(original_values = x, edited_values = x_refin) %>% 
+  mutate(equal = original_values == edited_values)
+
+# Display only the values that were edited by refinr.
+knitr::kable(
+  inspect_results[!inspect_results$equal, c("original_values", "edited_values")]
+)
+
+```
+
+If we wanted to make that even better, we can use the 'dict' argument of `key_collision_merge` and pass it a list of known university names. 
+```{r}
+
+uni_list <- read_csv("https://raw.githubusercontent.com/endSly/world-universities-csv/master/world-universities.csv", col_names = FALSE) %>% 
+  rename(code = X1,
+         uni_name = X2,
+         uni_www = X3)
+
+```
+
+
+Here's your first question - how many universities are there in the North American country between Canada and Mexico. 
+
+```{r howmany, exercise=T}
+
+unis -> unis %>%
+  filter(country %in% c("US", "United States")) 
+
+unis %>%
+  nrow()
+
+
+unis %>% refinr::key_collision_merge(university, ignore_strings = ignores) %>% 
+    refinr::n_gram_merge(ignore_strings = ignores)
+
+uni_list$uni_name
+```
+
+```{r howmany-solution}
+unis %>% 
+  filter(country %in% c("US", "United States", "U.S.", "U.S.A.", "United States", "United States ", "United States of America", "US", "USA", "FL ")) %>% 
+  nrow()
+
+```
+
+```{r howmany-check}
+# if they say ~ 13877 they've probably reconciled country, but not uni name
+#if more, probably haven't reconciled all the country options
+
+#Then, within the uni options one number would indicate not looking at 'distinct'
+# One would indicate
+
+
+```
+
+
+## Slicing, filtering, or faceting data by a value
+
+```{r}
+
+unis %>% filter(university == "Cardiff University" | university == "Acadia University") %>%
+  select(university,country,established)
+
+#but often, we'll want our filter to be more subtle than this, consider for example
+unis %>% filter(university == "Cambridge") %>%
+  select(university, country, established)
+#but...we know that institution exists
+
+unis %>% filter(str_detect(university,"Cambridge")) %>%
+  select(university,country,established)
+
+#note this isn't quite right ("Cambridge College" is a different place), we could use different ways to filter this, here's one involving negation using !
+unis %>% filter(str_detect(university,"Cambridge") & !str_detect(university,"College")) %>%
+  select(university,country,established)
+
+
+
+```
+
+```{r}
+#ok so it looks like there might be two options here.
+#either, we use a fuzzy matching (e.g. using agrep) to identify strings that look similar, possibly using a ground truth (e.g. a reference list of university names) to match these against
+#in OpenRefine this is called reconciliation http://freeyourmetadata.org/reconciliation/ 
+
+
+#or - a slower mechanism - we use entity recognition
+#it's worth noting that in this discussion of a similar problem, someone recommends using openrefine! https://stackoverflow.com/questions/6683380/techniques-for-finding-near-duplicate-records 
+#https://www.r-bloggers.com/merging-data-sets-based-on-partially-matched-data-elements/ and this great blog post discusses implementing some of the openrefine approaches in R (although, only partially, and not all of them - i.e., openrefine is really really powerful!)
+
+#using entity  recognition!
+#https://rpubs.com/lmullen/nlp-chapter
+```
+
+```{r}
+library(openNLP)
+library(NLP)
+entities <- function(doc, kind) {
+  s <- doc$content
+  a <- annotations(doc)[[1]]
+  if(hasArg(kind)) {
+    k <- sapply(a$features, `[[`, "kind")
+    s[a[k == kind]]
+  } else {
+    s[a[a$type == "entity"]]
+  }
+}
+
+#text <- c("the year 2015 is now")
+word_ann <- Maxent_Word_Token_Annotator()
+sent_ann <- Maxent_Sent_Token_Annotator()
+location_ann <- Maxent_Entity_Annotator(kind = "location")
+organization_ann <- Maxent_Entity_Annotator(kind = "organization")
+money_ann <- Maxent_Entity_Annotator(kind = "money")
+date_ann <- Maxent_Entity_Annotator(kind = "date")
+
+pipeline <- list(sent_ann,
+                 word_ann,
+                 location_ann,
+                 organization_ann,
+                 money_ann,
+                 date_ann)
+```
+
+Note we only need to do this for unique values, given it's very timeconsuming it's well worth subsetting and rejoining
+```{r}
+estab <- as.data.frame(unique(unis$established))
+
+estab$established_ann <- lapply(estab$established, function(x) annotate(x, list(sent_ann,word_ann,date_ann)))
+
+estab$established_ann_plain <- apply(estab[c("unique(estab$established)","established_ann")], 1, function(x) AnnotatedPlainTextDocument(x[[1]], x[[2]]))
+
+estab$established_date_extract <- lapply(estab$established_ann_plain, function(x) (x)[[1]][[1]])
+
+estab$established_date_extract <- unlist(estab$established_date_extract)
+#a tonne of cleaning is likely here, but at least its of date values!
+
+unis <- merge(unis, estab[c("unique(unis$established)","established_date_extract")], by.x="established", by.y="unique(unis$established)" )
+
+#let's just save this, we don't want to need  to redo the labelling! 
+#we need to select columns if you want to save as csv because you can't save list 
+
+save(unis,file="unis.Rda")
+```
+
+
+```{r}
+library(stringr) #for some cleaning
+unis$university <- str_trim(unis$university,side = "both")
+#converting things like this is surprisingly hard if you don't know what to search for...: ("Universidad Ju%C3%A1rez Aut%C3%B3noma de Tabasco")
+
+org <- as.data.frame(unique(unis$university))
+
+org$uni_org <- lapply(org$`unique(unis$university)`, function(x) annotate(x, list(sent_ann,word_ann,organization_ann)))
+
+org$uni_org_plain <- apply(org[c("unique(unis$university)","uni_org")], 1, function(x) AnnotatedPlainTextDocument(x[[1]], x[[2]]))
+
+
+org$uni_org_extract <- lapply(org$uni_org_plain, function(x) (x)[[1]][[1]])
+
+org$uni_org_extract <- unlist(org$uni_org_extract)
+
+View(org[grep("Cambridge", org$`unique(unis$university)`), ])
+
+unis <- merge(unis, org[c("unique(unis$university)", "uni_org_extract")], by.x = "university", by.y="unique(unis$university)")
+
+save(unis,file="unis.Rda")
+
+```
+
+```{r}
+#how do we convert words to numbers, given messy data?
+endow <- as.data.frame(unique(unis$endowment))
+
+endow$endowment_mon <- lapply(endow$`unique(unis$endowment)`, function(x) annotate(x, list(sent_ann,word_ann,money_ann)))
+
+endow$endowment_mon_plain <- apply(endow[c("unique(unis$endowment)","endowment_mon")], 1, function(x) AnnotatedPlainTextDocument(x[[1]], x[[2]]))
+
+endow$endowment_mon_extract <- lapply(endow$endowment_mon_plain, function(x) (x)[[1]][[1]])
+
+endow$endowment_mon_extract <- unlist(endow$endowment_mon_extract)  #I haven't checked these at all, do they look about right?
+
+unis <- merge(unis, endow[c("unique(unis$endowment)", "endowment_mon_extract")], by.x="endowment", by.y="unique(unis$endowment)")
+
+save(unis,file="unis.Rda")
+
+#load("unis.Rda")
+
+#write.csv(unis,"unis.csv") #let's just save this, we don't want to need  to redo the 
+```
+
+
+
+
+```{r}
+#extract locations, but also merge near duplicates
+#devtools::install_github("ropensci/monkeylearn")
+
+```
+
+Step 8: Deduplicate entries ([near] duplicate rows)
+There are a lot of (nearly) duplicate rows in the data, this can happen for various reasons including human error and because multiple historic values are stored. We want to keep just one copy.
+To do this (based on documentation here), click on the column with the university names, and then click on "Sort". Once you do this, you will notice that there is a new "Sort" menu at the top. Click on this and select "Reorder rows permanently". This may take a while as it renumbers the rows in which the entries appear. 
+
+Then on the column with university names, Edit cells -> Blank down 
+
+Then on the same column, Facet -> Customized facets -> Facet by blank 
+Now we want to remove all the blank rows, so select true, then on the "All" column on the left, Edit rows -> Remove all matching rows, like you have done when working with the numStudents and endowment columns. 
+Once you remove all the facets, and you now have a (mostly) cleaned data set. 
+
+
+```{r}
+#rather than do it this way, we'd probably use the entity recognition approach
+
+```
+
+
+Step 9: Exploring the data with scatter plots
+Click on the "endowment" column, Facet -> Scatterplot facet. 
+This shows the relationships between all of the numeric values in each of the columns. Click on "log" to get a better view. 
+
+Click on the plot for endowment vs. numStudents. You can now drag select a portion of the plot, and then see the rows corresponding to that selection. 
+
+```{r}
+
+```
+
+Step 10: Geocoding names and addresses
+This next part shows (based on documentation here) how to go from a description of a place (i.e. the name of a university) to values for its (likely) geographic coordinates. Behind the scenes, this uses Google Maps to figure out what is the most likely location you are asking for. 
+To learn how to do this, you don't need to do process the whole data set. This can take a while, and Google limits you to 2000 requests per day. It's better to just select around 10 rows and verify that it works. 
+An easy way to get a limited set of rows is by using a numeric log facet of the number of students, so use Facet -> Customized facets -> Numeric log facet 
+ 
+Use this facet to make a selection of around ten rows, and then check the matching rows number to verify that you have a reasonable selection size: 
+
+
+Now the fun begins and we want to do Edit column -> Add column by fetching URLs. In other words, the values of the cells in the new column are based on data that is retrieved from the Internet. 
+Enter in the expression below, and you should see a list of URLs with the names of the universities at the end of the URLs. Specify a new column name such as "geocodingResponse", and set the throttle delay to around 500 milliseconds. 
+"http://maps.google.com/maps/api/geocode/json?sensor=false&address=" + escape(value, "url")
+
+
+You should get a bunch of data back. To convert this into a more readable format, you need to click on the geocodingResponse column, and then on Edit column -> Add column based on this column. Enter in the expression below 
+with(value.parseJson().results[0].geometry.location, pair, pair.lat +", " + pair.lng)
+Now you have a single column with coordinates. You can split this into columns for latitude and longitude by selecting Edit Column -> Split into several columns and specifying a separator of ",". These columns can then be renamed using Edit Column -> Rename this column. 
+```{r}
+#there are a few ways we can do this in R
+#the most obvious one is using googlemaps api geocoding https://cengel.github.io/rspatial/5_Geocoding.nb.html#issues - but it limits us to 2500 queries a day.  to use that 
+#library(ggmap)
+#geocode(unis$uni_org_extract[[1]])  (,etc.) to get latlong
+
+#I think it should also be possible to use WikiData (possibly DBPedia) to access the organisation coordinates. Likely more missing data(?) but that can always be filled with google if necessary without first using the 2500 a day limit....of course if you subset to unique unis there are a lot fewer! 
+library(WikidataR)
+
+wiki_unis <- 
+
+#ok so first we have to find the Wikidata entity code for all of the universities
+unis$wikidata <- NA
+
+wkd <- as.data.frame(unique(unis$uni_org_extract))
+wkd$wikidata <- NA
+wkd$wikidata <- lapply(wkd[,1], function(x) find_item((x), language = "en", limit = 1))[[1]]$id #FALSE POSITIVES!!  This is pretty slow
+#wkd$wikidata <- lapply(wkd$wikidata, function(x) ifelse(length(x) > 0, unlist(x[[1]][[2]]), ""))
+
+wkd$lat <- NA
+wkd$long <- NA
+
+#get_geo_entity("Q35794", language = "en", radius = NULL)[[c(3,4)]]
+x <-  (lapply(wkd[,2], function(x) {
+  if(x != "") {
+    unlist(get_geo_entity(x, language = "en", radius = NULL)[c(3:4)])
+    } else {
+      ""}
+}))
+
+wkd$lat <- unlist(lapply(x, function(y) ifelse(length(y) > 0, unlist(y)[1], "")))
+wkd$long <- unlist(lapply(x, function(y) ifelse(length(y) > 0, unlist(y)[2], "")))
+
+rm(x)
+save(wkd,file="unis_location.Rda")
+
+load("unis_location.Rda")
+
+#ok, now we can map this. Again, we can do that in OpenRefine on google fusion tables really easily. To do it in R requires a bit of leg work, and there are various options depending on what we want to visualise (e.g., do we want to map universities to points, or to do a heatmap of endowment sizes, or...)
+
+```
+
+Step 11: Export Data
+The data can be exported to formats such as Excel. If you read this into tools such as SPSS and notice that the last column is missing, then open the file up in Excel, re-save it, and try to open it up again in SPSS. 
+```{r}
+
+```
+
+
+
+```{r}
+library(WikipediaR)
+
+pages_in_category(language = "en", project = "wikipedia", categories = "")
+
+```
+
+
+
+
+### And other encoding issues
+
+```{r}
+
+unis %>% 
+  mutate(asc = stringdist::printable_ascii(endowment)) %>% 
+  filter(asc == FALSE) %>% 
+  select(endowment) %>% 
+  unique
+
+#here we're just going to strip that out, but you should explore how your data is encoded
+unis$endowment <- str_replace(unis$endowment, "ï¿½", "")
+
+```
+
+Let's see if we can visualise this now using `summarise` from base r (which gives a more informative error message...) `r summarise(unis$endowment)`
+
+### Oh no! The endowment is chracater not $$$$

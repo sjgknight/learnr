@@ -1,0 +1,279 @@
+---
+title: "Some basic EDA, Tutorial!"
+author: "Simon Knight"
+date: "`r Sys.Date()`"
+output: learnr::tutorial
+runtime: shiny_prerendered
+# Do not index/display tutorial by setting `private: true`
+# private: true
+description: >
+  This is a demo tutorial.
+---
+
+```{r setup, include=FALSE}
+library(learnr)
+library(gradethis)
+gradethis::gradethis_setup()
+tutorial_options(exercise.checker = gradethis::grade_learnr)
+
+library(ggplot2)
+library(camcorder)
+library(patchwork)
+library(dplyr)
+
+load(here::here("DSI-matchR/matchr.RData"))
+
+
+tut_reptitle <- "EDA"
+```
+
+
+## Introduction
+For the purposes of DSI 36100, you should be thinking about how to use data science and computational approaches to work with and gain insight from data, and the benefits of challenges of doing so.
+
+As such, while you should be thinking about the skills you need to develop, the _primary focus_ is on thinking about and with data, not on the fine detail of technical skill.  
+
+Per the AT2 guide, there are a range of _fantastic_ visualisation tools and tools to help you summarise your data. One of the most exciting new tools in this space is [rawgraphs.io](http://rawgraphs.io) which I highly recommend exploring.
+
+So, here, we're going to walk through a limited set of approaches. I have selected these to help you try and avoid some common problems!  See the [instructions.Rmd](`here::here(instructions.Rmd)`) for some further resources if you want to delve deeper.
+
+
+###
+
+We're going to use three key packages here:
+
+1. `summarytools` and particularly the `dfSummary` function which gives us a summary of our dataframes
+1. `ggplot2` which is a 'grammar of graphics` (the gg) which gives a very flexible way of creating visaulisations in R
+1. probably something else
+
+
+## Intro to tools
+
+The summarytools package lets us create summaries of our data. The most comprehensive is `dfSummary` which includes:
+
+1. Descriptions of the variable types
+2. Some basic statistics 
+3. information about missing data, etc.
+
+```{r summaryexample}
+#summarytools::view
+#you'll see here I use ! in the select, this says 'not sent_split'. Deselecting two columns with no meaningful info in this context.
+# 
+
+trump_tweets %>%
+   select(-sent_split, -id_str) %>%
+    summarytools::dfSummary(
+      plain.ascii  = FALSE,
+      style        = "grid",
+      graph.magnif = 0.75,
+      sent_split = FALSE, #removing the sent_split column
+      valid.col    = FALSE
+    ) %>% 
+  print(
+    method = 'render',
+    headings = FALSE,
+    bootstrap.css = FALSE
+  )
+
+
+
+```
+
+
+
+### 
+
+
+
+Ggplot is hard to do justice to in one go...the `camcorder` package is a nice way to show some of this.
+
+
+<details>
+
+<summary>
+You can see the code used to create the camcorder gif below
+</summary>
+
+```{r ggggexample, echo=TRUE, eval=FALSE}
+#p_load_gh("thebioengineer/camcorder")
+
+gg_record(
+  dir = file.path(here::here("ex-eda/images")),
+  #dir = file.path(tempdir(),"recording"), # where to save the recording
+  device = png, # device to use to save images - either a character string or function
+  width = 4, # width of saved image
+  height = 6, # height of saved image
+  units = "in", # units for width and height
+  dpi = 300 # dpi to use when saving image
+)
+
+
+ggplot(mtcars) +
+  geom_point(aes(x = mpg, y = hp))
+ggplot(mtcars) + 
+  geom_point(aes(x = mpg, y = hp, shape = as.factor(gear)))
+ggplot(mtcars) + 
+  geom_point(aes(x = mpg, y = hp, color = gear))
+ggplot(mtcars) +
+  geom_point(aes(x = mpg, y = hp, color = gear)) +
+  geom_smooth(aes(x = mpg, y = hp))
+ggplot(mtcars) +
+  geom_smooth(aes(x = mpg, y = hp)) +
+  geom_point(aes(x = mpg, y = hp, color = gear))
+ggplot(mtcars) + 
+  geom_smooth(aes(x = mpg, y = hp)) +
+  geom_point(aes(x = mpg, y = hp, color = gear)) +
+  theme_light()
+ggplot(mtcars) + 
+  geom_smooth(aes(x = mpg, y = hp)) +
+  geom_point(aes(x = mpg, y = hp, color = gear)) +
+  theme_light()+
+  ggtitle("MPG vs Horse Power!")
+ggplot(mtcars) + 
+  geom_smooth(aes(x = mpg, y = hp)) +
+  geom_point(aes(x = mpg, y = hp, color = gear)) +
+  theme_light()+
+  ggtitle("MPG vs Horse Power!")+
+  labs(subtitle = "Power and economy, the classic compromise!")
+ggplot(mtcars) + 
+  geom_smooth(aes(x = mpg, y = hp)) +
+  geom_point(aes(x = mpg, y = hp, color = gear)) +
+  theme_light()+
+  ggtitle("MPG vs Horse Power!")+
+  labs(
+    subtitle = "Power and economy, the classic compromise!", 
+    x = "Efficiency (Miles/Gallon)",
+    y = "Power (Horsepower)")
+
+
+# If at any point, that you want to save your plots in a different format than what the recorder was initialized, or just set them for the first time, with this can be done through the `gg_resize_film()` function. This will set the size and dpi of all plots going forward.
+
+gg_resize_film(
+  height = 4,
+  width = 6,
+  units = "in",
+  dpi = 350
+)
+
+ggplot(mtcars) + 
+  geom_smooth(aes(x = mpg, y = hp)) +
+  geom_point(aes(x = mpg, y = hp, color = gear)) +
+  theme_light()+
+  ggtitle("MPG vs Horse Power!")+
+  labs(
+    subtitle = "Power and economy, the classic compromise!", 
+    x = "Efficiency (Miles/Gallon)",
+    y = "Power (Horsepower)") +
+  theme(
+    legend.position = "bottom",
+    panel.background = element_rect(colour = "green")
+  )
+ggplot(mtcars) + 
+  geom_smooth(aes(x = mpg, y = hp)) +
+  geom_point(aes(x = mpg, y = hp, color = gear)) +
+  theme_light()+
+  ggtitle("MPG vs Horse Power!")+
+  labs(
+    subtitle = "Power and economy, the classic compromise!", 
+    x = "Efficiency (Miles/Gallon)",
+    y = "Power (Horsepower)") +
+  theme(
+    legend.position = "bottom",
+    panel.background = element_rect(colour = "green",fill = "green")
+  )
+
+gg_playback(
+  name = file.path(here::here("ex-eda/images"),"vignette_gif.gif"),
+  #name = file.path(tempdir(),"recording","vignette_gif.gif"),
+  first_image_duration = 8,
+  last_image_duration = 12,
+  frame_duration = .25,
+  image_resize = 600,
+  width = 800,
+  height = 600
+)
+
+```
+
+</details>
+
+```{r, echo=F}
+knitr::include_graphics(here::here("ex-eda/images/vignette_gif.gif"))
+
+```
+
+
+[You can explore a great introductory guide to ggplot here](ggplot_reprores_mod.html)
+
+There are two excellent interactives kindly shared under an MIT license by Monica Thieu. You can run these locally like the other interactives:
+
+* Running this chunk opens an introductory ggplot interactive 
+```{r, eval=FALSE}
+rmarkdown::run("ex-eda/cu-sipps-ggplot-aes-main/worksheet-1.Rmd")
+
+```
+
+* Running this chunk opens the next steps for learning ggplot, as an interactive 
+```{r, eval=FALSE}
+rmarkdown::run("ex-eda/cu-sipps-ggplot-aes-main/worksheet-2.Rmd")
+
+```
+
+
+
+### 
+
+
+
+If you want to include descriptive statistics - and I think you should - the `summarytools` package has other methods, you can also use `mean()`, `sd()`, etc. from `base r`.
+
+```{r}
+
+summarytools::descr(mtcars, #what data
+                    var = mpg, #which variable(s) or column
+                    stats = "common", #which statistics, set to 'all' to view wider range. DO NOT PUT ALL IN THE REPORT UNLESS THERE'S A GOOD REASON!
+                    )
+
+
+#You might want to compare grouops, e.g. here, we're comparing the mpg variable by gear group. 
+#there are other ways to do this
+
+with(mtcars,
+  stby(data = mpg,
+       INDICES = gear,
+       FUN = descr,
+       stats = "common")
+)
+
+```
+
+
+If you want a refresher of some basic statistical concepts, showing you how to implement them in `R`, I have also included some interactives kindly shared under a CC-By-NC license by rjknell-zz (github handle). You can access these below, the content is all useful but note the examples are from biostats so there are some specialist (but not relevant) terms.
+
+```{r}
+rmarkdown::run("ex-eda/exploratory-master/inst/tutorials/1 Frequency histograms/Frequency_histograms.Rmd")
+
+rmarkdown::run("ex-eda/exploratory-master/inst/tutorials/2 Descriptive statistics/Descriptive statistics.Rmd")
+
+rmarkdown::run("ex-eda/exploratory-master/inst/tutorials/3 Boxplots/Boxplots.Rmd")
+
+rmarkdown::run("ex-eda/exploratory-master/inst/tutorials/4 Scatterplots/Scatterplots.Rmd")
+
+
+```
+
+
+### Next steps
+
+I haven't focused on R exercises here, instead, think about if you want to learn a couple of things in R, while also using end-user tools including readily available models that apply various classification approaches, and tools like rawgraphs.io.
+
+You might find it useful to play with the expandar tool, which walks through some basic analysis functions (not all of which will be relevant for your data) and lets you export the bits you want.
+
+The esquisse tool may also be a useful addon to use.
+
+```{r exploratory}
+ExPanDaR::ExPanD(mtcars)
+
+esquisse::esquisser()
+
+```
