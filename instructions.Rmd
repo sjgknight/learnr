@@ -1,6 +1,8 @@
 ---
 title: "Welcome to the DSI learnR resources"
 output: html_notebook
+editor_options: 
+  chunk_output_type: inline
 ---
 
 This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
@@ -19,14 +21,17 @@ To give you a simple idea of what these tutorials do on a local machine, let's r
 
 ```{r learnr_hi}
 
-rmarkdown::run("hello/hello.Rmd")
+source('r/runlearnr.R')
+#rmarkdown::run("hello/hello.Rmd")
+
+runlearnr("hello/hello.Rmd","r/passr.Rmd")
 
 ```
 
 ## An important setup step do not skip over this heading!
 We also need to install some packages...this is not very elegant, but it goes over all the files in this project and looks for Rmds. Then it reads each line of the Rmds, and extracts references to library calls. I've already done this, so I've pasted the output into one line for you to run.  You can modify this if you don't want to install all the packages at once (it may take a while). 
 
-```{r}
+```{r setup}
 # rmd <- list.files(path = ".", recursive = T) %>%
 #   str_subset("\\.Rmd$") 
 # rmd <- lapply(rmd, readLines)
@@ -50,7 +55,7 @@ pacman::p_load(tidyverse, openNLP, NLP, stringr, ggmap, WikidataR, ggplot2, psyc
 Learn about how data works in `R` 
 ```{r learnr_basics}
 
-rmarkdown::run("ex-data-basics/ex-data-basics.Rmd")
+runlearnr("ex-data-basics/ex-data-basics.Rmd")
 
 ```
 
@@ -59,7 +64,7 @@ Learn about how to do basic manipulation in `R`
 
 ```{r learnr_explor}
 
-rmarkdown::run("ex-data-filters/ex-data-filter.Rmd")
+runlearnr("ex-data-filters/ex-data-filter.Rmd")
 
 ```
 
@@ -67,7 +72,7 @@ rmarkdown::run("ex-data-filters/ex-data-filter.Rmd")
 
 ```{r}
 
-rmarkdown::run("ex-eda/ex-eda.Rmd")
+runlearnr("ex-eda/eda.Rmd")
 
 ```
 
@@ -79,7 +84,7 @@ This one is more interesting! In this one, you will have to address _questions_ 
 #You should have this directory locally, and so the first line will work.  If you want to check you have the most current version, uncomment the github lines and run that. 
 
 if (interactive()) {
-  rmarkdown::run("DSI-matchR/snippet_matchR_clustered.Rmd")
+  runlearnr("DSI-matchR/snippet_matchR_clustered.Rmd")
   }
 
 ## to get from github
@@ -115,16 +120,21 @@ Allison Horst's fantastic 'explore NA' interactive, which uses the `naniar` pack
 
 ```{r learnr_na}
 
-rmarkdown::run("DSI-cleanR/explore-na-master/explore_na_tutorial.Rmd")
+runlearnr("DSI-cleanR/explore-na-master/explore_na_tutorial.Rmd")
 
 ```
 
-I've also started building an example of other common wrangling issues, it includes:
+I've also started building an example of other common wrangling issues, it will include:
 
 1. string cleaning (whitespace, strings that should be NA, etc.)
+1. removing extraneous strings in numeric (Total: 873)
 1. tidying variable types
 1. reconciling names using both more manual dplyr approach, and refinr
-1. 
+1. converting currencies e.g. https://cran.r-project.org/web/packages/priceR/priceR.pdf 
+1. words-to-numbers
+1. encoding-issue
+
+... but it isn't finished yet. If you want to play with some of these issues, check the DSI-cleanR directory.
 
 ```{r learnr_cleanr}
 
@@ -138,6 +148,10 @@ I've also started building an example of other common wrangling issues, it inclu
 If you like this style of tutorial, you might find some useful resources in:
 
 1. http://milton-the-cat.rocks/home/adventr.html#Contents_of_adventr 
+1. https://github.com/RohanAlexander/DoSStoolkit the DoSStoolkit, in particular git_outta_here (to learn git), r_marky_markdown (to learn more markdown), 
+1. https://github.com/asteves/cinfeRence causal inference tutorials 
+1. https://ppbds.github.io/primer.tutorials/ bayesian statistics
+
 
 If you're inspired and want to build some, or have ideas for useful tutorials or edits to the existing ones, please let me know!
 

@@ -1,0 +1,52 @@
+---
+title: "How many things are wrong with this?"
+author: "Simon Knight, sjgknight@gmail.com"
+date: "`r Sys.Date()`"
+output: learnr::tutorial
+runtime: shiny_prerendered
+description: "Welcome to this learnr tutorial!"
+---
+
+```{r setup, include=FALSE}
+# Attach packages:
+pacman::p_load(learnr, here, tidyverse, janitor, naniar, kableExtra, fontawesome)
+
+# Global code chunk settings:
+knitr::opts_chunk$set(echo = FALSE)
+
+# Create objects use throughout tutorial:
+
+```
+
+## Data cleaning and wrangling in R
+
+Data looks like this, in nice organised grids, right?
+
+`r fontawsome::fa("table")`
+
+Well...
+
+<iframe src="https://docs.google.com/spreadsheets/d/e/2PACX-1vSpqGBRQcgjK5Zsxe4_VteHu4Ivztj0aKpA1jH_MeNQJwxmglg1lma4cOwb_6_i0qeSJ4g3Z_kDq8P8/pubhtml?widget=true&amp;headers=false"></iframe>
+
+That's a bit of an odd case, but the issues in that spreadsheet are all things I have seen in spreadsheets.
+
+If it happens in small data, why do you think these issues don't also exist in larger datasets?
+
+## Task 1
+
+Review the table, how many things _can_ you identify that are problematic in this data? 
+
+<iframe src="https://docs.google.com/spreadsheets/d/e/2PACX-1vSpqGBRQcgjK5Zsxe4_VteHu4Ivztj0aKpA1jH_MeNQJwxmglg1lma4cOwb_6_i0qeSJ4g3Z_kDq8P8/pubhtml?widget=true&amp;headers=false"></iframe>
+
+## Task 2
+
+Ok, let's think about how we'd clean some of these up then...
+You may find these useful
+https://github.com/rstudio/cheatsheets/blob/main/data-import.pdf
+
+
+To set this up I probably just want to read in each relevant part 
+
+* read_excel(PATH, range = "Sheet1!B1:D2") or read_sheets(ss, range = "B1:D2") - to deal with spread over two rows 
+* fahrenheit.to.celsius(T.fahrenheit, round = 2) - to deal with 
+

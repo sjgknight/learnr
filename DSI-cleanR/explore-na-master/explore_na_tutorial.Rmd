@@ -22,7 +22,7 @@ knitr::opts_chunk$set(echo = FALSE)
 # Create objects use throughout tutorial:
 
 # Read in data as `kp_rodents`
-kp_rodents <- read_csv("data/kp_mammals.csv") %>% 
+kp_rodents <- read_csv(here::here("data/kp_mammals.csv")) %>% 
   arrange(date)
 
 # Find counts by rodent species

@@ -6,7 +6,7 @@ output:
   learnr::tutorial:
     progressive: true
     allow_skip: true
-    df_print: default
+#    df_print: default
 runtime: shiny_prerendered
 description: "Welcome to this learnr tutorial!"
 ---
@@ -34,17 +34,21 @@ To read documentation and view examples of usage, type ?function_name in console
 
 First, we'll load the required packages, they come with a bunch of built in data, and we're going to use that here.
 
-```{r setup, echo=FALSE, warning=F, message=F}
+```{r setup, include=FALSE, warning=F, message=F}
 #tutorial_options(exercise.timelimit = 25) #the default is 30, I'm including this here as a reference. You can also set this per exercise in the chunk with exercise.timelimit=10.  This places a constraint on running arbitrary code.
 #It would be sensible to also include RAppArmor
 library(learnr)
 library(gradethis)
+
 gradethis::gradethis_setup()
+tutorial_options(exercise.checker = gradethis::grade_learnr, exercise.eval=T, exercise.reveal_solution = T)
 
-tutorial_options(exercise.checker = gradethis::grade_learnr)
-
-knitr::opts_chunk$set(warning = FALSE, cache=T, fig.width = 8, fig.height = 6)
-
+knitr::opts_chunk$set(
+	fig.height = 6,
+	fig.width = 8,
+	warning = FALSE,
+	cache = TRUE
+)
 
 tut_reptitle <- "matchR"
 
@@ -76,7 +80,7 @@ tut_reptitle <- "matchR"
   library(tidytext)
   library(corrplot)
 #detach(package:plyr)
-  
+
 #library(rsconnect)
 #deployApp(appName = "Snippet_matchR)
 ##############################################################
@@ -231,9 +235,10 @@ In some of the examples below, it's not about "right" and "wrong" answers, so mu
 
 ### Data Exploration
 First, let's just look at the first 10 rows of the dataset to see what it includes.
-You can change the below to tail(trump_tweets) or trump_tweets[1:100,], etc. 
+You can change the below to `tail(trump_tweets)` or `trump_tweets[1:100,]`, etc. 
 Use the arrow in the top row to navigate through the columns.
-```{r explore_datasets, exercise = TRUE, exercise.lines=2}
+
+```{r explore-datasets, exercise = TRUE, exercise.lines=2}
 #View the first 10 rows of the dataset
 head(trump_tweets)
 ```
@@ -243,7 +248,7 @@ head(trump_tweets)
 ### Demonstrating a Table / Data Overview
 Let's just take a look at some overall summary stats before we get into the visualisation. These are useful for a range of reasons, one of which is they can tell us about the shape of the data. Read about a part of that through measures of skew and kurtosis here: https://codeburst.io/2-important-statistics-terms-you-need-to-know-in-data-science-skewness-and-kurtosis-388fef94eeaa
 
-```{r Summary of RT and Favs}
+```{r Summary-of-RT-and-Favs}
 trump_tweets %>% 
   filter(source %in% c("Twitter for Android","Twitter for iPhone","TweetDeck","Twitter Web Client")) %>% 
   select(c(favorite_count,retweet_count,source)) %>%
@@ -257,7 +262,8 @@ trump_tweets %>%
 
 An example (a pretty ugly one, using base R) of a plot is in the code. We will see how this can be improved later. 
 One easy fix we'll apply later is to rotate the x axis to show the number, not the notation. Unfortunately base R doesn't let us do that easily.
-```{r basic histograms, echo=TRUE, eval=T}
+
+```{r basic-histograms, echo=TRUE, eval=T}
 hist(trump_tweets$favorite_count)
 ```
 
@@ -270,7 +276,8 @@ In r we assign by using the operator `<-`
 This is preceded by the name of the variable, in this case `x`
 And followed by the thing we're assigning, in this case `2`
 So `y <- 3*3` assigns the value `9` to the variable `y`
-Delete the code in the box to do this; the checker looks at your code rather than the output in this case.
+Delete the code in the box to  to `assign` the value 2 to the variable x; the checker looks at your code rather than the output in this case.
+
 ```{r example, exercise = TRUE}
 1+1
 ```
@@ -292,6 +299,7 @@ We've made it easy below. You don't need to *write* your own code, just copy and
 ### Q1
 *What is the relationship between retweets and likes?*
 Delete the wrong answers, leaving only 1 block (you can view the outputs for every block pre-rendered, or run this block)
+
 ```{r relationship, exercise = TRUE, exercise.lines=30 }
 ################### BLOCK 8 ########################
 ggplot(trump_tweets, aes(x = retweet_count, y = favorite_count)) +
@@ -717,35 +725,6 @@ android_iphone_or %>% filter(Android+iPhone > 100) %>%
 
 ```
 
-</detail>
-
-## Submit
-
-```{r context="setup", echo=F}
-# These functions save user inputs to (1) create a report, based on mattblackwell/qsslearnr, see R directory/sourced below, and (2) take this output and use learnrhash::encode_obj, this function(output) { base64enc::base64encode(memCompress(serialized(output, NULL), compress = "bzip2")) } - (see code for pretty). It serializes, compresses, and encodes.  
-
-source(here::here('r/submission.R'))
-source(here::here('r/utils.R'))
-
-submission_ui
-
-#see https://ladedu.com/these-are-the-direct-links-to-composing-emails-in-web-based-email-services/#Outlookcom
-#https://gist.github.com/miwebguy/2e805e343e0d434f06f2194b92b925d8 for detail
-#Alternatives might include [submitr](https://github.com/dtkaplan/submitr/issues), or some other [learnr event checker](https://pkgs.rstudio.com/learnr/articles/publishing.html#events), or [learnitdown](https://github.com/SciViews/learnitdown/blob/HEAD/R/learnitdown_learnr.R),
-# other email approaches - but I don't like these - include  [http://datawookie.github.io/emayili/](http://datawookie.github.io/emayili/) check mRpostman too
-# The rationale for this simple URL email string, is it's very easy, it doesn't involve sharing (or worrying about) keys, it can be used for locally run learnr activities
-
-```
-
-
-```{r context="server"}
-submission_server()
-
-learnrhash::encoder_logic()
-
-```
-
-
 ## Code blocks
 This is just all the code blocks from above.
 
@@ -1008,3 +987,4 @@ ggplot(trump_tweets %>% mutate(retweeted = ifelse(retweet_count > quantile(retwe
 
 ```
 
+</details>

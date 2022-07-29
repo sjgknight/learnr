@@ -20,9 +20,10 @@ library(ggplot2)
 library(camcorder)
 library(patchwork)
 library(dplyr)
+library(summarytools)
 
 load(here::here("DSI-matchR/matchr.RData"))
-
+#load(("DSI-matchR/matchr.RData"))
 
 tut_reptitle <- "EDA"
 ```
@@ -85,7 +86,7 @@ trump_tweets %>%
 
 
 
-Ggplot is hard to do justice to in one go...the `camcorder` package is a nice way to show some of this.
+ggplot is hard to do justice to in one go...the `camcorder` package is a nice way to show some of this.
 
 
 <details>
@@ -197,7 +198,7 @@ gg_playback(
 
 </details>
 
-```{r, echo=F}
+```{r vignette_gif, echo=F}
 knitr::include_graphics(here::here("ex-eda/images/vignette_gif.gif"))
 
 ```
@@ -208,14 +209,14 @@ knitr::include_graphics(here::here("ex-eda/images/vignette_gif.gif"))
 There are two excellent interactives kindly shared under an MIT license by Monica Thieu. You can run these locally like the other interactives:
 
 * Running this chunk opens an introductory ggplot interactive 
-```{r, eval=FALSE}
-rmarkdown::run("ex-eda/cu-sipps-ggplot-aes-main/worksheet-1.Rmd")
+```{r run_worksheet1, eval=FALSE}
+rmarkdown::run("cu-sipps-ggplot-aes-main/worksheet-1.Rmd")
 
 ```
 
 * Running this chunk opens the next steps for learning ggplot, as an interactive 
-```{r, eval=FALSE}
-rmarkdown::run("ex-eda/cu-sipps-ggplot-aes-main/worksheet-2.Rmd")
+```{r run_worksheet2, eval=FALSE}
+rmarkdown::run("cu-sipps-ggplot-aes-main/worksheet-2.Rmd")
 
 ```
 
@@ -227,7 +228,7 @@ rmarkdown::run("ex-eda/cu-sipps-ggplot-aes-main/worksheet-2.Rmd")
 
 If you want to include descriptive statistics - and I think you should - the `summarytools` package has other methods, you can also use `mean()`, `sd()`, etc. from `base r`.
 
-```{r}
+```{r summarytools}
 
 summarytools::descr(mtcars, #what data
                     var = mpg, #which variable(s) or column
@@ -235,7 +236,7 @@ summarytools::descr(mtcars, #what data
                     )
 
 
-#You might want to compare grouops, e.g. here, we're comparing the mpg variable by gear group. 
+#You might want to compare groups, e.g. here, we're comparing the mpg variable by gear group. 
 #there are other ways to do this
 
 with(mtcars,
@@ -250,14 +251,14 @@ with(mtcars,
 
 If you want a refresher of some basic statistical concepts, showing you how to implement them in `R`, I have also included some interactives kindly shared under a CC-By-NC license by rjknell-zz (github handle). You can access these below, the content is all useful but note the examples are from biostats so there are some specialist (but not relevant) terms.
 
-```{r}
-rmarkdown::run("ex-eda/exploratory-master/inst/tutorials/1 Frequency histograms/Frequency_histograms.Rmd")
+```{r run_edas}
+rmarkdown::run("exploratory-master/inst/tutorials/1 Frequency histograms/Frequency_histograms.Rmd")
 
-rmarkdown::run("ex-eda/exploratory-master/inst/tutorials/2 Descriptive statistics/Descriptive statistics.Rmd")
+rmarkdown::run("exploratory-master/inst/tutorials/2 Descriptive statistics/Descriptive statistics.Rmd")
 
-rmarkdown::run("ex-eda/exploratory-master/inst/tutorials/3 Boxplots/Boxplots.Rmd")
+rmarkdown::run("exploratory-master/inst/tutorials/3 Boxplots/Boxplots.Rmd")
 
-rmarkdown::run("ex-eda/exploratory-master/inst/tutorials/4 Scatterplots/Scatterplots.Rmd")
+rmarkdown::run("exploratory-master/inst/tutorials/4 Scatterplots/Scatterplots.Rmd")
 
 
 ```

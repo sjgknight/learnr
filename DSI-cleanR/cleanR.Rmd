@@ -125,7 +125,7 @@ unis <- unis %>% mutate(
 
 Another thing we can do is reconcile names using string distances. There are a lot of ways to do this, and unfortunately which makes sense will depend on your data and the specific issues. That is, some things can be automated, but some things may need human eyes. 
 
-The `refinr` hepls do this in a semi-automated way, and helpful one of the examples is for unis! 
+The `refinr` helps do this in a semi-automated way, and helpful one of the examples is for unis! 
 ```{r}
 
 x <- c(
@@ -148,7 +148,7 @@ x_refin <- x %>%
 
 # Create df for comparing the original values to the edited values.
 # This is especially useful for larger input vectors.
-inspect_results <- data_frame(original_values = x, edited_values = x_refin) %>% 
+inspect_results <- tibble(original_values = x, edited_values = x_refin) %>% 
   mutate(equal = original_values == edited_values)
 
 # Display only the values that were edited by refinr.
@@ -173,17 +173,30 @@ Here's your first question - how many universities are there in the North Americ
 
 ```{r howmany, exercise=T}
 
-unis -> unis %>%
+unis_us <- unis %>%
   filter(country %in% c("US", "United States")) 
 
-unis %>%
+unis_us %>%
   nrow()
 
 
-unis %>% refinr::key_collision_merge(university, ignore_strings = ignores) %>% 
-    refinr::n_gram_merge(ignore_strings = ignores)
+us_list <- unis_us %>% 
+  pull(university) %>% 
+  refinr::key_collision_merge(vect = ., dict = uni_list$uni_name, bus_suffix = FALSE) %>%
+  refinr::n_gram_merge(bus_suffix = FALSE)
 
-uni_list$uni_name
+
+# Create df for comparing the original values to the edited values.
+# This is especially useful for larger input vectors.
+inspect_results <- tibble(original_values = unis_us$university, edited_values = us_list) %>% 
+  mutate(equal = original_values == edited_values)
+
+# Display only the values that were edited by refinr.
+knitr::kable(
+  inspect_results[!inspect_results$equal, c("original_values", "edited_values")]
+)
+
+
 ```
 
 ```{r howmany-solution}

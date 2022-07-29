@@ -1,0 +1,68 @@
+---
+title: "R Notebook"
+output: html_notebook
+editor_options: 
+  chunk_output_type: inline
+---
+
+
+The following code takes some details about you as input, and lets you select an image as output; you should test the options, and pick your favourite of the images and change the code to select that option.
+
+```{r generative, exercise=TRUE}
+
+your_name <- "Simon Knight"
+course_level <- "Postgraduate masters level degree" #change to 'graduate certificate' or 'graduate diploma'
+course_name <- "Data Science and Innovation"
+university <- "University of Technology Sydney"
+start_year <- 2022
+end_year <- 2024
+
+
+#################################
+# Make changes above for your variables. Play with function below if you like.
+################################
+
+df <- data.frame(
+  your_name = your_name,
+  course_level = course_level,
+  course_name = course_name,
+  university = university,
+  start_year = rep(start_year,4),
+  end_year = rep(end_year,4),
+  check.rows=F,
+  stringsAsFactors = T) 
+
+d <- unlist(apply(df,2,function(x) {
+  unlist(strsplit(x, split = ""))
+}))
+
+d <- kandinsky:::normalizeAndVectorize(d)
+
+kandinsky::kandinsky(d)
+
+
+
+nm <- unlist(stringr::str_split(your_name, " "))
+m <- morsecode::text_to_morse_numeric(your_name)
+morse_seg <- unlist(morsecode:::text_to_morse_segments(your_name))
+lets <- unlist(strsplit(your_name, split = ""))
+alph <- as.numeric(let2n(your_name))
+phone <- as.numeric(letterToNumber(your_name))
+shift_sub_cipher <- secrettext::setcode(your_name, LETTER2num(lets[1]), letter2num(lets[c(nchar(your_name))]))
+dist <- as.numeric(stringdist::stringdist(shift_sub_cipher,lets))
+kd <- tibble(data = (c(your_name,nm,m,morse_seg,lets,alph,phone,shift_sub_cipher,dist)))
+kandinsky:::zeroOneNormalize(kd)
+kandinsky(kd)
+
+
+tm_viz <- text_to_morse_segments(your_name, line_length = 5) %>%
+    ggplot(aes(x = x, xend = xend, y = y, yend = yend,
+               color = sample(group))) +
+    geom_segment(size = 3, show.legend = FALSE) +
+    theme_void() +
+    scale_color_viridis_c()
+tm_viz
+
+```
+
+

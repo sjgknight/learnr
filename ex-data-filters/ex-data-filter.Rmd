@@ -191,13 +191,13 @@ NA == NA
 
 The most confusing result above is this one:
 
-```{r}
+```{r not-na}
 NA == NA
 ```
 
 It's easiest to understand why this is true with a bit more context:
 
-```{r}
+```{r mary}
 # Let x be Mary's age. We don't know how old she is.
 x <- NA
 
@@ -211,7 +211,7 @@ x == y
 
 If you want to determine if a value is missing, use `is.na()`:
 
-```{r}
+```{r na}
 is.na(x)
 ```
 
@@ -219,7 +219,7 @@ is.na(x)
 
 `filter()` only includes rows where the condition is `TRUE`; it excludes both `FALSE` and `NA` values. If you want to preserve missing values, ask for them explicitly:
 
-```{r}
+```{r filter}
 df <- tibble(x = c(1, NA, 3))
 filter(df, x > 1)
 filter(df, is.na(x) | x > 1)
@@ -410,7 +410,7 @@ mutate(flights_sml,
 
 Note that when you use `mutate()` you can create multiple variables at once, and you can even refer to variables that are created earlier in the call to create other variables later in the call:
 
-```{r echo = FALSE}
+```{r mutate-1, echo = FALSE}
 flights_sml <- select(flights, 
   arr_delay, 
   dep_delay,
@@ -419,7 +419,7 @@ flights_sml <- select(flights,
 )
 ```
 
-```{r}
+```{r mutate-2}
 mutate(flights_sml,
   gain = arr_delay - dep_delay,
   hours = air_time / 60,
@@ -452,7 +452,7 @@ transmute(flights,
 ```
 ## Exercises
 
-```{r, eval = FALSE, echo = FALSE}
+```{r first, eval = FALSE, echo = FALSE}
 flights <- flights %>% mutate(
   dep_time = hour * 60 + minute,
   arr_time = (arr_time %/% 100) * 60 + (arr_time %% 100),
@@ -483,31 +483,7 @@ filter(flight_times, air_time != total_time)
 "Good Job! it doesn't make sense to do math with `arr_time` and `dep_time` until you convert the values to minutes past midnight (as you did with `dep_time` and `sched_dep_time` in the previous exercise)."
 ```
     
-## Submit
-
-```{r context="setup", echo=F}
-# These functions save user inputs to (1) create a report, based on mattblackwell/qsslearnr, see R directory/sourced below, and (2) take this output and use learnrhash::encode_obj, this function(output) { base64enc::base64encode(memCompress(serialized(output, NULL), compress = "bzip2")) } - (see code for pretty). It serializes, compresses, and encodes.  
-
-source(here::here('r/submission.R'))
-source(here::here('r/utils.R'))
-
-submission_ui
-
-#see https://ladedu.com/these-are-the-direct-links-to-composing-emails-in-web-based-email-services/#Outlookcom
-#https://gist.github.com/miwebguy/2e805e343e0d434f06f2194b92b925d8 for detail
-#Alternatives might include [submitr](https://github.com/dtkaplan/submitr/issues), or some other [learnr event checker](https://pkgs.rstudio.com/learnr/articles/publishing.html#events), or [learnitdown](https://github.com/SciViews/learnitdown/blob/HEAD/R/learnitdown_learnr.R),
-# other email approaches - but I don't like these - include  [http://datawookie.github.io/emayili/](http://datawookie.github.io/emayili/) check mRpostman too
-# The rationale for this simple URL email string, is it's very easy, it doesn't involve sharing (or worrying about) keys, it can be used for locally run learnr activities
-
-```
-
-
-```{r context="server"}
-submission_server()
-
-learnrhash::encoder_logic()
-
-```
+## Submit your answers
 
 
 ```{r extras, echo=F}

@@ -1,0 +1,47 @@
+
+
+## Submit
+
+I care more about you attempting these than 100% correct answers. 
+
+To submit, generate your answer below, and paste it into the google form provided. 
+
+```{r passr, message=FALSE, warning=FALSE, include=FALSE}
+#this file gets included/sourced/child rmd into each learnr Rmd. It means I can update how things get submitted on all tutorials without needing to manually edit them all.
+
+#see passr project file for ideas for other ways to do this (email, gdrive distrib, etc.)
+
+library(learnrhash)
+```
+
+
+```{r encode-me, context="server"}
+
+learnrhash::encoder_logic()
+
+#learnSTATS::encoder_logic()
+```
+
+### Hash
+
+Use the copy and paste function to submit this to the form
+
+```{r encode-ui, echo=FALSE}
+
+learnrhash::encoder_ui(ui_before = NULL, ui_after = NULL)
+
+```
+
+### Decode
+
+If you want to check what the hash shows, use the decoder (at the moment this is outputting in the instructions.Rmd chunk output where you can easily view it; If you run the tmpReport.Rmd it shows up within the rendered shiny...I'm not sure why)
+
+```{r context="server"}
+learnrhash::decoder_logic()
+```
+
+
+```{r decode-ui, echo=FALSE}
+learnrhash::decoder_ui()
+```
+

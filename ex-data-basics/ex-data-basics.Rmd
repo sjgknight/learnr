@@ -1,6 +1,6 @@
 ---
 title: "Data basics"
-author: Lightly edited from example in "`r citation('learnr')`"
+author: "Lightly edited from example in learnr package"
 date: "`r Sys.Date()`"
 output: 
   learnr::tutorial:
@@ -256,7 +256,7 @@ dplyr::
 Sometimes we might also want to find functions that _are not_ exported from the library. One way you can explore these is by using `:::` instead. See how this shows the smaller functions that make up the pieces of `dplyr` you use directly?
 This can be especially useful if you need to create your own function based on one of these.
 
-```{r}
+```{r internals, exercise=T}
 dplyr:::
 
 ```
@@ -266,25 +266,3 @@ dplyr:::
 
 You've met R's basic table structures—data frames and tibbles; and you have learned how to inspect their contents. When you are ready, go on to the next tutorial to begin visualizing your data.
 
-
-```{r context="setup", echo=F}
-# These functions save user inputs to (1) create a report, based on mattblackwell/qsslearnr, see R directory/sourced below, and (2) take this output and use learnrhash::encode_obj, this function(output) { base64enc::base64encode(memCompress(serialized(output, NULL), compress = "bzip2")) } - (see code for pretty). It serializes, compresses, and encodes.  
-
-source(here::here('r/submission.R'))
-source(here::here('r/utils.R'))
-
-submission_ui
-
-#see https://ladedu.com/these-are-the-direct-links-to-composing-emails-in-web-based-email-services/#Outlookcom
-#https://gist.github.com/miwebguy/2e805e343e0d434f06f2194b92b925d8 for detail
-
-
-```
-
-
-```{r context="server"}
-submission_server()
-
-learnrhash::encoder_logic()
-
-```
