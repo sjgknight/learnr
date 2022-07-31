@@ -15,28 +15,12 @@ library(learnr)
 library(gradethis)
 library(learnrhash)
 library(pacman)
-p_load(kandinsky,morsecode, phonenumber, secrettext,tibble,ggplot2)
 
 gradethis::gradethis_setup()
 tutorial_options(exercise.checker = gradethis::grade_learnr)
-##############
-#converts letters to numbers
-letter2num <- function(x) {utf8ToInt(x) - utf8ToInt("a") + 1L}
-LETTER2num <- function(x) {utf8ToInt(x) - utf8ToInt("A") + 1L}
-#unname(sapply("ABC", LETTER2num))
-let2n <- function(x) { 
-  
-  x <- unlist(strsplit(x, split = ""))
-  
-  sapply(x, function(y) { 
-    unlist(strsplit(y, split = ""))
-  
-  if(grepl("[[:upper:]]", y)) {
-    LETTER2num(y)
-} else {
-    letter2num(y)
-}
-  }   ) }
+
+
+
 
 
 tut_reptitle <- "Hello world"

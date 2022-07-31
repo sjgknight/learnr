@@ -5,6 +5,30 @@ editor_options:
   chunk_output_type: inline
 ---
 
+```{r setup}
+p_load(phonenumber, secrettext,tibble,ggplot2)
+pacman::p_load_gh("gsimchoni/kandinsky")
+pacman::p_load_gh("xmarquez/morsecode")
+##############
+#converts letters to numbers
+letter2num <- function(x) {utf8ToInt(x) - utf8ToInt("a") + 1L}
+LETTER2num <- function(x) {utf8ToInt(x) - utf8ToInt("A") + 1L}
+#unname(sapply("ABC", LETTER2num))
+let2n <- function(x) { 
+  
+  x <- unlist(strsplit(x, split = ""))
+  
+  sapply(x, function(y) { 
+    unlist(strsplit(y, split = ""))
+  
+  if(grepl("[[:upper:]]", y)) {
+    LETTER2num(y)
+} else {
+    letter2num(y)
+}
+  }   ) }
+
+```
 
 The following code takes some details about you as input, and lets you select an image as output; you should test the options, and pick your favourite of the images and change the code to select that option.
 
@@ -41,13 +65,12 @@ d <- kandinsky:::normalizeAndVectorize(d)
 kandinsky::kandinsky(d)
 
 
-
 nm <- unlist(stringr::str_split(your_name, " "))
 m <- morsecode::text_to_morse_numeric(your_name)
 morse_seg <- unlist(morsecode:::text_to_morse_segments(your_name))
 lets <- unlist(strsplit(your_name, split = ""))
 alph <- as.numeric(let2n(your_name))
-phone <- as.numeric(letterToNumber(your_name))
+phone <- sapply(strsplit((phonenumber::letterToNumber(your_name)),"")[[1]], as.numeric)
 shift_sub_cipher <- secrettext::setcode(your_name, LETTER2num(lets[1]), letter2num(lets[c(nchar(your_name))]))
 dist <- as.numeric(stringdist::stringdist(shift_sub_cipher,lets))
 kd <- tibble(data = (c(your_name,nm,m,morse_seg,lets,alph,phone,shift_sub_cipher,dist)))
