@@ -77,7 +77,7 @@ After that, you will be able to access any object in ggplot2â€”including `mpg`â€
 
 ### But my data is on my computer not in the package! 
 
-Normally, we are not working with data from a package directly. Instead, we want to import data either by reading a file, or sometimes by steaming from an API. 
+Normally, we are not working with data from a package directly. Instead, we want to import data either by reading a file, or sometimes by streaming from an API. 
 
 While both base `R` and various packages can read a wide range of file types, and connect easily to APIs, the easiest and most common way to import data is using `read_csv` or `read.csv`. The second is built into `R`, but the `dplyr` `read_csv` beats it for speed and default behaviours. 
 
@@ -119,9 +119,13 @@ You can learn more about `mpg` by opening its help page. The help page will expl
 **Hint:** Type `?mpg` and then click the Submit Answer button.
 </div>
 
-```{r help-code-check, echo = FALSE}
+```{r help-solution}
 ?mpg
 # checking code
+```
+
+```{r help-code-check, echo = FALSE}
+grade_code()
 ```
 
 ### ? syntax

@@ -174,7 +174,7 @@ class="section level3">
 <h3>But my data is on my computer not in the package!</h3>
 <p>Normally, we are not working with data from a package directly.
 Instead, we want to import data either by reading a file, or sometimes
-by steaming from an API.</p>
+by streaming from an API.</p>
 <p>While both base <code>R</code> and various packages can read a wide
 range of file types, and connect easily to APIs, the easiest and most
 common way to import data is using <code>read_csv</code> or
@@ -227,6 +227,12 @@ data-diagnostics="1" data-startover="1" data-lines="0">
 <div id="section-help-hint">
 <p><strong>Hint:</strong> Type <code>?mpg</code> and then click the
 Submit Answer button.</p>
+</div>
+<div class="tutorial-exercise-support" data-label="help-solution"
+data-completion="1" data-diagnostics="1" data-startover="1"
+data-lines="0">
+<pre class="text"><code>?mpg
+# checking code</code></pre>
 </div>
 </div>
 <div id="section-syntax" class="section level3">
@@ -638,9 +644,10 @@ learnr:::store_exercise_cache(structure(list(label = "help", global_setup = stru
 "", "tut_reptitle <- \"Data Basics\""), chunk_opts = list(label = "setup", 
     include = FALSE)), setup = NULL, chunks = list(list(label = "help", 
     code = "", opts = list(label = "\"help\"", exercise = "TRUE"), 
-    engine = "r")), code_check = structure(c("?mpg", "# checking code"
-), chunk_opts = list(label = "help-code-check", echo = FALSE)), 
-    error_check = NULL, check = NULL, solution = NULL, test_cases = NULL, 
+    engine = "r")), code_check = structure("grade_code()", chunk_opts = list(
+    label = "help-code-check", echo = FALSE)), error_check = NULL, 
+    check = NULL, solution = structure(c("?mpg", "# checking code"
+    ), chunk_opts = list(label = "help-solution")), test_cases = NULL, 
     options = list(eval = FALSE, echo = TRUE, results = "markup", 
         tidy = FALSE, tidy.opts = NULL, collapse = FALSE, prompt = FALSE, 
         comment = NA, highlight = FALSE, size = "normalsize", 
@@ -705,21 +712,21 @@ learnr:::store_exercise_cache(structure(list(label = "exercises1", global_setup 
  
 <script type="application/shiny-prerendered" data-context="server">
 learnr:::question_prerendered_chunk(structure(list(type = "learnr_radio", label = "quiz1-1", question = structure("What does the <code>drv<\u002fcode> variable of <code>mpg<\u002fcode> describe?  Read the help for <code>?mpg<\u002fcode> to find out.", html = TRUE, class = c("html", 
-"character")), answers = list(structure(list(id = "lnr_ans_63c3162", 
+"character")), answers = list(structure(list(id = "lnr_ans_cf5e207", 
     option = "Whether or not the vehicle has driver side airbags", 
     value = "Whether or not the vehicle has driver side airbags", 
     label = structure("Whether or not the vehicle has driver side airbags", html = TRUE, class = c("html", 
     "character")), correct = FALSE, message = NULL, type = "literal"), class = c("tutorial_question_answer", 
-"tutorial_quiz_answer")), structure(list(id = "lnr_ans_a6d4dca", 
+"tutorial_quiz_answer")), structure(list(id = "lnr_ans_d87aab2", 
     option = "Whether a car is automatic or manual transmission", 
     value = "Whether a car is automatic or manual transmission", 
     label = structure("Whether a car is automatic or manual transmission", html = TRUE, class = c("html", 
     "character")), correct = FALSE, message = NULL, type = "literal"), class = c("tutorial_question_answer", 
-"tutorial_quiz_answer")), structure(list(id = "lnr_ans_8e2e67c", 
+"tutorial_quiz_answer")), structure(list(id = "lnr_ans_dfd2a40", 
     option = "The number of cylinders in the car's engine", value = "The number of cylinders in the car's engine", 
     label = structure("The number of cylinders in the car&#39;s engine", html = TRUE, class = c("html", 
     "character")), correct = FALSE, message = NULL, type = "literal"), class = c("tutorial_question_answer", 
-"tutorial_quiz_answer")), structure(list(id = "lnr_ans_4db78b2", 
+"tutorial_quiz_answer")), structure(list(id = "lnr_ans_e07ab93", 
     option = "Something else", value = "Something else", label = structure("Something else", html = TRUE, class = c("html", 
     "character")), correct = TRUE, message = structure("<code>drv<\u002fcode> describes the type of drivetrain in a car: front wheel drive, rear wheel drive, or four wheel drive.", html = TRUE, class = c("html", 
     "character")), type = "literal"), class = c("tutorial_question_answer", 
@@ -731,23 +738,23 @@ learnr:::question_prerendered_chunk(structure(list(type = "learnr_radio", label 
 "character")), message = NULL, post_message = NULL), ids = list(
     answer = "quiz1-1-answer", question = "quiz1-1"), loading = structure("<strong>Loading:<\u002fstrong> \nWhat does the <code>drv<\u002fcode> variable of <code>mpg<\u002fcode> describe?  Read the help for <code>?mpg<\u002fcode> to find out.\n<br/><br/><br/>", html = TRUE, class = c("html", 
 "character")), random_answer_order = FALSE, allow_retry = TRUE, 
-    seed = 346859237.338481, options = list()), class = c("learnr_radio", 
+    seed = 450692792.79013, options = list()), class = c("learnr_radio", 
 "tutorial_question")), session = session)
 </script>
 
 
 <script type="application/shiny-prerendered" data-context="server">
 learnr:::question_prerendered_chunk(structure(list(type = "learnr_radio", label = "quiz1-2", question = structure("How many rows are in the data frame named <code>cars<\u002fcode>?", html = TRUE, class = c("html", 
-"character")), answers = list(structure(list(id = "lnr_ans_2826c60", 
+"character")), answers = list(structure(list(id = "lnr_ans_5c3b4f0", 
     option = "2", value = "2", label = structure("2", html = TRUE, class = c("html", 
     "character")), correct = FALSE, message = NULL, type = "literal"), class = c("tutorial_question_answer", 
-"tutorial_quiz_answer")), structure(list(id = "lnr_ans_f236aa5", 
+"tutorial_quiz_answer")), structure(list(id = "lnr_ans_66be85a", 
     option = "25", value = "25", label = structure("25", html = TRUE, class = c("html", 
     "character")), correct = FALSE, message = NULL, type = "literal"), class = c("tutorial_question_answer", 
-"tutorial_quiz_answer")), structure(list(id = "lnr_ans_c385db2", 
+"tutorial_quiz_answer")), structure(list(id = "lnr_ans_c3cc03", 
     option = "50", value = "50", label = structure("50", html = TRUE, class = c("html", 
     "character")), correct = TRUE, message = NULL, type = "literal"), class = c("tutorial_question_answer", 
-"tutorial_quiz_answer")), structure(list(id = "lnr_ans_41f5dad", 
+"tutorial_quiz_answer")), structure(list(id = "lnr_ans_3867a40", 
     option = "100", value = "100", label = structure("100", html = TRUE, class = c("html", 
     "character")), correct = FALSE, message = NULL, type = "literal"), class = c("tutorial_question_answer", 
 "tutorial_quiz_answer"))), button_labels = list(submit = structure("<span data-i18n=\"button.questionsubmit\">Submit Answer<\u002fspan>", html = TRUE, class = c("html", 
@@ -758,22 +765,22 @@ learnr:::question_prerendered_chunk(structure(list(type = "learnr_radio", label 
 "character")), message = NULL, post_message = NULL), ids = list(
     answer = "quiz1-2-answer", question = "quiz1-2"), loading = structure("<strong>Loading:<\u002fstrong> \nHow many rows are in the data frame named <code>cars<\u002fcode>?\n<br/><br/><br/>", html = TRUE, class = c("html", 
 "character")), random_answer_order = FALSE, allow_retry = TRUE, 
-    seed = 881377887.089576, options = list()), class = c("learnr_radio", 
+    seed = 750712098.650422, options = list()), class = c("learnr_radio", 
 "tutorial_question")), session = session)
 </script>
  
 <script type="application/shiny-prerendered" data-context="server">
 learnr:::question_prerendered_chunk(structure(list(type = "learnr_radio", label = "quiz1-3", question = structure("How many columns are in the data frame named <code>cars<\u002fcode>?", html = TRUE, class = c("html", 
-"character")), answers = list(structure(list(id = "lnr_ans_a9bd28b", 
+"character")), answers = list(structure(list(id = "lnr_ans_8b0e401", 
     option = "1", value = "1", label = structure("1", html = TRUE, class = c("html", 
     "character")), correct = FALSE, message = NULL, type = "literal"), class = c("tutorial_question_answer", 
-"tutorial_quiz_answer")), structure(list(id = "lnr_ans_e88cada", 
+"tutorial_quiz_answer")), structure(list(id = "lnr_ans_c60695b", 
     option = "2", value = "2", label = structure("2", html = TRUE, class = c("html", 
     "character")), correct = TRUE, message = NULL, type = "literal"), class = c("tutorial_question_answer", 
-"tutorial_quiz_answer")), structure(list(id = "lnr_ans_1ca23c7", 
+"tutorial_quiz_answer")), structure(list(id = "lnr_ans_e31fd8b", 
     option = "4", value = "4", label = structure("4", html = TRUE, class = c("html", 
     "character")), correct = FALSE, message = NULL, type = "literal"), class = c("tutorial_question_answer", 
-"tutorial_quiz_answer")), structure(list(id = "lnr_ans_a15ad16", 
+"tutorial_quiz_answer")), structure(list(id = "lnr_ans_f71ab8a", 
     option = "more than four", value = "more than four", label = structure("more than four", html = TRUE, class = c("html", 
     "character")), correct = FALSE, message = NULL, type = "literal"), class = c("tutorial_question_answer", 
 "tutorial_quiz_answer"))), button_labels = list(submit = structure("<span data-i18n=\"button.questionsubmit\">Submit Answer<\u002fspan>", html = TRUE, class = c("html", 
@@ -784,7 +791,7 @@ learnr:::question_prerendered_chunk(structure(list(type = "learnr_radio", label 
 "character")), message = NULL, post_message = NULL), ids = list(
     answer = "quiz1-3-answer", question = "quiz1-3"), loading = structure("<strong>Loading:<\u002fstrong> \nHow many columns are in the data frame named <code>cars<\u002fcode>?\n<br/><br/><br/>", html = TRUE, class = c("html", 
 "character")), random_answer_order = FALSE, allow_retry = TRUE, 
-    seed = 509263966.262855, options = list()), class = c("learnr_radio", 
+    seed = 2092956455.02539, options = list()), class = c("learnr_radio", 
 "tutorial_question")), session = session)
 </script>
 
@@ -830,16 +837,16 @@ learnr:::store_exercise_cache(structure(list(label = "flights", global_setup = s
 
 <script type="application/shiny-prerendered" data-context="server">
 learnr:::question_prerendered_chunk(structure(list(type = "learnr_checkbox", label = "quiz2", question = structure("Which types of variables does <code>flights<\u002fcode> contain? Check all that apply.", html = TRUE, class = c("html", 
-"character")), answers = list(structure(list(id = "lnr_ans_fbdcadd", 
+"character")), answers = list(structure(list(id = "lnr_ans_b1b7b45", 
     option = "integers", value = "integers", label = structure("integers", html = TRUE, class = c("html", 
     "character")), correct = TRUE, message = NULL, type = "literal"), class = c("tutorial_question_answer", 
-"tutorial_quiz_answer")), structure(list(id = "lnr_ans_3700ea2", 
+"tutorial_quiz_answer")), structure(list(id = "lnr_ans_40b87cb", 
     option = "doubles", value = "doubles", label = structure("doubles", html = TRUE, class = c("html", 
     "character")), correct = TRUE, message = NULL, type = "literal"), class = c("tutorial_question_answer", 
-"tutorial_quiz_answer")), structure(list(id = "lnr_ans_8a55462", 
+"tutorial_quiz_answer")), structure(list(id = "lnr_ans_6c90ec0", 
     option = "factors", value = "factors", label = structure("factors", html = TRUE, class = c("html", 
     "character")), correct = FALSE, message = NULL, type = "literal"), class = c("tutorial_question_answer", 
-"tutorial_quiz_answer")), structure(list(id = "lnr_ans_c7eb2ae", 
+"tutorial_quiz_answer")), structure(list(id = "lnr_ans_b085584", 
     option = "characters", value = "characters", label = structure("characters", html = TRUE, class = c("html", 
     "character")), correct = TRUE, message = NULL, type = "literal"), class = c("tutorial_question_answer", 
 "tutorial_quiz_answer"))), button_labels = list(submit = structure("<span data-i18n=\"button.questionsubmit\">Submit Answer<\u002fspan>", html = TRUE, class = c("html", 
@@ -850,7 +857,7 @@ learnr:::question_prerendered_chunk(structure(list(type = "learnr_checkbox", lab
 "character")), message = NULL, post_message = NULL), ids = list(
     answer = "quiz2-answer", question = "quiz2"), loading = structure("<strong>Loading:<\u002fstrong> \nWhich types of variables does <code>flights<\u002fcode> contain? Check all that apply.\n<br/><br/><br/>", html = TRUE, class = c("html", 
 "character")), random_answer_order = FALSE, allow_retry = TRUE, 
-    seed = 1584362643.26222, options = list()), class = c("learnr_checkbox", 
+    seed = 1123059048.97703, options = list()), class = c("learnr_checkbox", 
 "tutorial_question")), session = session)
 </script>
  
