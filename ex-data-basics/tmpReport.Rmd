@@ -274,6 +274,8 @@ I care more about you attempting these than 100% correct answers.
 
 To submit, generate your answer below, and paste it into the google form provided. 
 
+If you're in DSI 36100 (which you probably are), that's https://forms.gle/rYs9hhL726zmE9wNA 
+
 ```{r passr, message=FALSE, warning=FALSE, include=FALSE}
 #this file gets included/sourced/child rmd into each learnr Rmd. It means I can update how things get submitted on all tutorials without needing to manually edit them all.
 
@@ -312,4 +314,5 @@ learnrhash::decoder_logic()
 ```{r decode-ui, echo=FALSE}
 learnrhash::decoder_ui()
 ```
+
 
