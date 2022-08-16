@@ -15,28 +15,12 @@ library(learnr)
 library(gradethis)
 library(learnrhash)
 library(pacman)
-p_load(kandinsky,morsecode, phonenumber, secrettext,tibble,ggplot2)
 
 gradethis::gradethis_setup()
 tutorial_options(exercise.checker = gradethis::grade_learnr)
-##############
-#converts letters to numbers
-letter2num <- function(x) {utf8ToInt(x) - utf8ToInt("a") + 1L}
-LETTER2num <- function(x) {utf8ToInt(x) - utf8ToInt("A") + 1L}
-#unname(sapply("ABC", LETTER2num))
-let2n <- function(x) { 
-  
-  x <- unlist(strsplit(x, split = ""))
-  
-  sapply(x, function(y) { 
-    unlist(strsplit(y, split = ""))
-  
-  if(grepl("[[:upper:]]", y)) {
-    LETTER2num(y)
-} else {
-    letter2num(y)
-}
-  }   ) }
+
+
+
 
 
 tut_reptitle <- "Hello world"
@@ -57,11 +41,15 @@ grade_code()
 ```
 
 
-## Submit answers
+
+
+## Submit
 
 I care more about you attempting these than 100% correct answers. 
 
 To submit, generate your answer below, and paste it into the google form provided. 
+
+If you're in DSI 36100 (which you probably are), that's https://forms.gle/rYs9hhL726zmE9wNA 
 
 ```{r passr, message=FALSE, warning=FALSE, include=FALSE}
 #this file gets included/sourced/child rmd into each learnr Rmd. It means I can update how things get submitted on all tutorials without needing to manually edit them all.
@@ -79,7 +67,9 @@ learnrhash::encoder_logic()
 #learnSTATS::encoder_logic()
 ```
 
-### Use the copy and paste function to submit this to the form
+### Hash
+
+Use the copy and paste function to submit this to the form
 
 ```{r encode-ui, echo=FALSE}
 
@@ -87,7 +77,9 @@ learnrhash::encoder_ui(ui_before = NULL, ui_after = NULL)
 
 ```
 
-### If you want to check what the hash shows, use the decoder
+### Decode
+
+If you want to check what the hash shows, use the decoder (at the moment this is outputting in the instructions.Rmd chunk output where you can easily view it; If you run the tmpReport.Rmd it shows up within the rendered shiny...I'm not sure why)
 
 ```{r context="server"}
 learnrhash::decoder_logic()
@@ -97,4 +89,5 @@ learnrhash::decoder_logic()
 ```{r decode-ui, echo=FALSE}
 learnrhash::decoder_ui()
 ```
+
 

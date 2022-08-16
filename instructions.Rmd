@@ -11,6 +11,7 @@ Try executing this chunk by clicking the *Run* button within the chunk (or the g
 
 ```{r}
 library(learnr)
+
 ```
 
 
@@ -20,9 +21,6 @@ You already did the tutorial contained in `ex-setup-r` to download and setup r a
 To give you a simple idea of what these tutorials do on a local machine, let's run the following line. 
 
 ```{r learnr_hi}
-
-source('r/runlearnr.R')
-#rmarkdown::run("hello/hello.Rmd")
 
 runlearnr("hello/hello.Rmd","r/passr.Rmd")
 
@@ -40,6 +38,10 @@ We also need to install some packages...this is not very elegant, but it goes ov
 
 # boot <- 'if (!require("pacman")) install.packages("pacman")'
 # cat(paste0(boot, "\npacman::p_load(", paste(na.omit(unlist(packs)), collapse=", "), ")\n"))
+
+source('r/runlearnr.R')
+#rmarkdown::run("hello/hello.Rmd")
+
 
 install.packages("pacman")
 
