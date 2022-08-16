@@ -10,7 +10,7 @@
 
 <meta name="author" content="Lightly edited from example in learnr package" />
 
-<meta name="date" content="2022-06-13" />
+<meta name="date" content="2022-08-16" />
 
 <meta name="progressive" content="true" />
 <meta name="allow-skip" content="true" />
@@ -174,7 +174,7 @@ class="section level3">
 <h3>But my data is on my computer not in the package!</h3>
 <p>Normally, we are not working with data from a package directly.
 Instead, we want to import data either by reading a file, or sometimes
-by steaming from an API.</p>
+by streaming from an API.</p>
 <p>While both base <code>R</code> and various packages can read a wide
 range of file types, and connect easily to APIs, the easiest and most
 common way to import data is using <code>read_csv</code> or
@@ -321,21 +321,24 @@ any data frame. For example, this would return a tibble version of
 <div id="section-type-codes" class="section level3">
 <h3>Type codes</h3>
 <pre><code>## # A tibble: 336,776 x 19
-##     year month   day dep_time sched_dep_time dep_delay arr_time sched_arr_time
-##    &lt;int&gt; &lt;int&gt; &lt;int&gt;    &lt;int&gt;          &lt;int&gt;     &lt;dbl&gt;    &lt;int&gt;          &lt;int&gt;
-##  1  2013     1     1      517            515         2      830            819
-##  2  2013     1     1      533            529         4      850            830
-##  3  2013     1     1      542            540         2      923            850
-##  4  2013     1     1      544            545        -1     1004           1022
-##  5  2013     1     1      554            600        -6      812            837
-##  6  2013     1     1      554            558        -4      740            728
-##  7  2013     1     1      555            600        -5      913            854
-##  8  2013     1     1      557            600        -3      709            723
-##  9  2013     1     1      557            600        -3      838            846
-## 10  2013     1     1      558            600        -2      753            745
-## # ... with 336,766 more rows, and 11 more variables: arr_delay &lt;dbl&gt;,
-## #   carrier &lt;chr&gt;, flight &lt;int&gt;, tailnum &lt;chr&gt;, origin &lt;chr&gt;, dest &lt;chr&gt;,
-## #   air_time &lt;dbl&gt;, distance &lt;dbl&gt;, hour &lt;dbl&gt;, minute &lt;dbl&gt;, time_hour &lt;dttm&gt;</code></pre>
+##     year month   day dep_time sched_de~1 dep_d~2 arr_t~3 sched~4 arr_d~5 carrier
+##    &lt;int&gt; &lt;int&gt; &lt;int&gt;    &lt;int&gt;      &lt;int&gt;   &lt;dbl&gt;   &lt;int&gt;   &lt;int&gt;   &lt;dbl&gt; &lt;chr&gt;  
+##  1  2013     1     1      517        515       2     830     819      11 UA     
+##  2  2013     1     1      533        529       4     850     830      20 UA     
+##  3  2013     1     1      542        540       2     923     850      33 AA     
+##  4  2013     1     1      544        545      -1    1004    1022     -18 B6     
+##  5  2013     1     1      554        600      -6     812     837     -25 DL     
+##  6  2013     1     1      554        558      -4     740     728      12 UA     
+##  7  2013     1     1      555        600      -5     913     854      19 B6     
+##  8  2013     1     1      557        600      -3     709     723     -14 EV     
+##  9  2013     1     1      557        600      -3     838     846      -8 B6     
+## 10  2013     1     1      558        600      -2     753     745       8 AA     
+## # ... with 336,766 more rows, 9 more variables: flight &lt;int&gt;, tailnum &lt;chr&gt;,
+## #   origin &lt;chr&gt;, dest &lt;chr&gt;, air_time &lt;dbl&gt;, distance &lt;dbl&gt;, hour &lt;dbl&gt;,
+## #   minute &lt;dbl&gt;, time_hour &lt;dttm&gt;, and abbreviated variable names
+## #   1: sched_dep_time, 2: dep_delay, 3: arr_time, 4: sched_arr_time,
+## #   5: arr_delay
+## # i Use `print(n = ...)` to see more rows, and `colnames()` to see all variable names</code></pre>
 <p>Did you notice that a row of three (or four) letter abbreviations
 appears under the column names of <code>flights</code>? These
 abbreviations describe the <em>type</em> of data that is stored in each
@@ -408,102 +411,6 @@ data-lines="0">
 <p>You’ve met R’s basic table structures—data frames and tibbles; and
 you have learned how to inspect their contents. When you are ready, go
 on to the next tutorial to begin visualizing your data.</p>
-</div>
-</div>
-<div id="section-submit-your-answers" class="section level2">
-<h2>Submit your answers</h2>
-<p>I care more about you attempting these than 100% correct answers.</p>
-<div
-id="section-use-the-copy-and-paste-function-to-submit-this-to-the-form"
-class="section level3">
-<h3>Use the copy and paste function to submit this to the form</h3>
-<div class="encoder_ui">
-<div>
-If you have completed this tutorial and are happy with all of your
-solutions, please click the button below to generate your hash and
-submit it using the following link:
-<br/>
-<h3>
-<a href="http://google.com" target="_blank">http://google.com</a>
-</h3>
-<br/>
-</div>
-<div class="row" style="padding-bottom: 0.5em;">
-<div class="col-sm-3">
-<button id="hash_generate" type="button" class="btn btn-default action-button" title="Generate hash">Generate</button>
-</div>
-<div class="col-sm-7"></div>
-<div class="col-sm-2">
-<div class="btn-group btn-group-sm pull-right" role="group" aria-label="Clipboard buttons">
-<button id="hash_select" class="btn btn-default" type="button" title="Select hash"><svg
-      aria-hidden="true" focusable="false"
-      data-prefix="fas" data-icon="i-cursor"
-      class="svg-inline--fa fa-i-cursor fa-w-8"
-      role="img" xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 256 512" style="height: 16px;">
-      <path fill="currentColor" d="M256 52.048V12.065C256 5.496 250.726.148 244.158.066 211.621-.344 166.469.011 128 37.959 90.266.736 46.979-.114 11.913.114 5.318.157 0 5.519 0 12.114v39.645c0 6.687 5.458 12.078 12.145 11.998C38.111 63.447 96 67.243 96 112.182V224H60c-6.627 0-12 5.373-12 12v40c0 6.627 5.373 12 12 12h36v112c0 44.932-56.075 48.031-83.95 47.959C5.404 447.942 0 453.306 0 459.952v39.983c0 6.569 5.274 11.917 11.842 11.999 32.537.409 77.689.054 116.158-37.894 37.734 37.223 81.021 38.073 116.087 37.845 6.595-.043 11.913-5.405 11.913-12V460.24c0-6.687-5.458-12.078-12.145-11.998C217.889 448.553 160 444.939 160 400V288h36c6.627 0 12-5.373 12-12v-40c0-6.627-5.373-12-12-12h-36V112.182c0-44.932 56.075-48.213 83.95-48.142 6.646.018 12.05-5.346 12.05-11.992z">
-      </path>
-    </svg></button>
-<span class="btn-separator"></span>
-<button id="hash_copy" class="btn btn-default" type="button" title="Copy hash to clipboard"><svg
-      aria-hidden="true" focusable="false"
-      data-prefix="far" data-icon="clipboard"
-      class="svg-inline--fa fa-clipboard fa-w-12"
-      role="img" xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 384 512" style="height: 16px;">
-      <path fill="currentColor" d="M336 64h-80c0-35.3-28.7-64-64-64s-64 28.7-64 64H48C21.5 64 0 85.5 0 112v352c0 26.5 21.5 48 48 48h288c26.5 0 48-21.5 48-48V112c0-26.5-21.5-48-48-48zM192 40c13.3 0 24 10.7 24 24s-10.7 24-24 24-24-10.7-24-24 10.7-24 24-24zm144 418c0 3.3-2.7 6-6 6H54c-3.3 0-6-2.7-6-6V118c0-3.3 2.7-6 6-6h42v36c0 6.6 5.4 12 12 12h168c6.6 0 12-5.4 12-12v-36h42c3.3 0 6 2.7 6 6z">
-      </path>
-    </svg></button>
-</div>
-</div>
-</div>
-<pre id="hash_output" class="shiny-text-output" style="white-space: pre-wrap;"></pre>
-<br/>
-<script>selectText = function(node) {
-        node = document.getElementById(node);
-
-        if (document.body.createTextRange) {
-          const range = document.body.createTextRange();
-          range.moveToElementText(node);
-          range.select();
-        } else if (window.getSelection) {
-          const selection = window.getSelection();
-          const range = document.createRange();
-          range.selectNodeContents(node);
-          selection.removeAllRanges();
-          selection.addRange(range);
-        } else {
-          console.warn('Could not select text in node: Unsupported browser.');
-        }
-      }</script>
-<script>document.getElementById('hash_select').addEventListener('click', function(e) {
-        e.preventDefault();
-
-        selectText('hash_output');
-      });</script>
-<script>document.getElementById('hash_copy').addEventListener('click', function(e) {
-        e.preventDefault();
-
-        selectText('hash_output');
-        document.execCommand('copy');
-      });</script>
-</div>
-</div>
-<div
-id="section-if-you-want-to-check-what-the-hash-shows-use-the-decoder"
-class="section level3">
-<h3>If you want to check what the hash shows, use the decoder</h3>
-<div>
-<div class="form-group shiny-input-container">
-<label class="control-label" id="decode_text-label" for="decode_text">Hash to decode</label>
-<textarea id="decode_text" class="form-control"></textarea>
-</div>
-<button id="decode" type="button" class="btn btn-default action-button">Decode!</button>
-<br/>
-<br/>
-<h4>Submission:</h4>
-<pre class="shiny-text-output noplaceholder" id="decode_submissions" style="white-space: pre-wrap;"></pre>
-</div>
 <p>
 <script type="application/shiny-prerendered" data-context="server-start">
 library(learnr)
@@ -639,7 +546,7 @@ learnr:::store_exercise_cache(structure(list(label = "help", global_setup = stru
 "", "tut_reptitle <- \"Data Basics\""), chunk_opts = list(label = "setup", 
     include = FALSE)), setup = NULL, chunks = list(list(label = "help", 
     code = "", opts = list(label = "\"help\"", exercise = "TRUE"), 
-    engine = "r")), code_check = structure(c("?mpg", "# checking code"
+    engine = "r")), code_check = structure(c("help(mpg)", "# checking code"
 ), chunk_opts = list(label = "help-code-check", echo = FALSE)), 
     error_check = NULL, check = NULL, solution = NULL, test_cases = NULL, 
     options = list(eval = FALSE, echo = TRUE, results = "markup", 
@@ -706,21 +613,21 @@ learnr:::store_exercise_cache(structure(list(label = "exercises1", global_setup 
  
 <script type="application/shiny-prerendered" data-context="server">
 learnr:::question_prerendered_chunk(structure(list(type = "learnr_radio", label = "quiz1-1", question = structure("What does the <code>drv<\u002fcode> variable of <code>mpg<\u002fcode> describe?  Read the help for <code>?mpg<\u002fcode> to find out.", html = TRUE, class = c("html", 
-"character")), answers = list(structure(list(id = "lnr_ans_93f7f0c", 
+"character")), answers = list(structure(list(id = "lnr_ans_ee483b7", 
     option = "Whether or not the vehicle has driver side airbags", 
     value = "Whether or not the vehicle has driver side airbags", 
     label = structure("Whether or not the vehicle has driver side airbags", html = TRUE, class = c("html", 
     "character")), correct = FALSE, message = NULL, type = "literal"), class = c("tutorial_question_answer", 
-"tutorial_quiz_answer")), structure(list(id = "lnr_ans_d8d13f0", 
+"tutorial_quiz_answer")), structure(list(id = "lnr_ans_af78cf2", 
     option = "Whether a car is automatic or manual transmission", 
     value = "Whether a car is automatic or manual transmission", 
     label = structure("Whether a car is automatic or manual transmission", html = TRUE, class = c("html", 
     "character")), correct = FALSE, message = NULL, type = "literal"), class = c("tutorial_question_answer", 
-"tutorial_quiz_answer")), structure(list(id = "lnr_ans_5af9508", 
+"tutorial_quiz_answer")), structure(list(id = "lnr_ans_3c9dd2a", 
     option = "The number of cylinders in the car's engine", value = "The number of cylinders in the car's engine", 
     label = structure("The number of cylinders in the car&#39;s engine", html = TRUE, class = c("html", 
     "character")), correct = FALSE, message = NULL, type = "literal"), class = c("tutorial_question_answer", 
-"tutorial_quiz_answer")), structure(list(id = "lnr_ans_a29d007", 
+"tutorial_quiz_answer")), structure(list(id = "lnr_ans_50e45d6", 
     option = "Something else", value = "Something else", label = structure("Something else", html = TRUE, class = c("html", 
     "character")), correct = TRUE, message = structure("<code>drv<\u002fcode> describes the type of drivetrain in a car: front wheel drive, rear wheel drive, or four wheel drive.", html = TRUE, class = c("html", 
     "character")), type = "literal"), class = c("tutorial_question_answer", 
@@ -732,23 +639,23 @@ learnr:::question_prerendered_chunk(structure(list(type = "learnr_radio", label 
 "character")), message = NULL, post_message = NULL), ids = list(
     answer = "quiz1-1-answer", question = "quiz1-1"), loading = structure("<strong>Loading:<\u002fstrong> \nWhat does the <code>drv<\u002fcode> variable of <code>mpg<\u002fcode> describe?  Read the help for <code>?mpg<\u002fcode> to find out.\n<br/><br/><br/>", html = TRUE, class = c("html", 
 "character")), random_answer_order = FALSE, allow_retry = TRUE, 
-    seed = 1395668880.85009, options = list()), class = c("learnr_radio", 
+    seed = 1205766355.93852, options = list()), class = c("learnr_radio", 
 "tutorial_question")), session = session)
 </script>
 
 
 <script type="application/shiny-prerendered" data-context="server">
 learnr:::question_prerendered_chunk(structure(list(type = "learnr_radio", label = "quiz1-2", question = structure("How many rows are in the data frame named <code>cars<\u002fcode>?", html = TRUE, class = c("html", 
-"character")), answers = list(structure(list(id = "lnr_ans_73fb698", 
+"character")), answers = list(structure(list(id = "lnr_ans_3677718", 
     option = "2", value = "2", label = structure("2", html = TRUE, class = c("html", 
     "character")), correct = FALSE, message = NULL, type = "literal"), class = c("tutorial_question_answer", 
-"tutorial_quiz_answer")), structure(list(id = "lnr_ans_c90543e", 
+"tutorial_quiz_answer")), structure(list(id = "lnr_ans_e161dd2", 
     option = "25", value = "25", label = structure("25", html = TRUE, class = c("html", 
     "character")), correct = FALSE, message = NULL, type = "literal"), class = c("tutorial_question_answer", 
-"tutorial_quiz_answer")), structure(list(id = "lnr_ans_42dcba", 
+"tutorial_quiz_answer")), structure(list(id = "lnr_ans_99bdc32", 
     option = "50", value = "50", label = structure("50", html = TRUE, class = c("html", 
     "character")), correct = TRUE, message = NULL, type = "literal"), class = c("tutorial_question_answer", 
-"tutorial_quiz_answer")), structure(list(id = "lnr_ans_354b8e6", 
+"tutorial_quiz_answer")), structure(list(id = "lnr_ans_d7c391c", 
     option = "100", value = "100", label = structure("100", html = TRUE, class = c("html", 
     "character")), correct = FALSE, message = NULL, type = "literal"), class = c("tutorial_question_answer", 
 "tutorial_quiz_answer"))), button_labels = list(submit = structure("<span data-i18n=\"button.questionsubmit\">Submit Answer<\u002fspan>", html = TRUE, class = c("html", 
@@ -759,22 +666,22 @@ learnr:::question_prerendered_chunk(structure(list(type = "learnr_radio", label 
 "character")), message = NULL, post_message = NULL), ids = list(
     answer = "quiz1-2-answer", question = "quiz1-2"), loading = structure("<strong>Loading:<\u002fstrong> \nHow many rows are in the data frame named <code>cars<\u002fcode>?\n<br/><br/><br/>", html = TRUE, class = c("html", 
 "character")), random_answer_order = FALSE, allow_retry = TRUE, 
-    seed = 1370603742.36176, options = list()), class = c("learnr_radio", 
+    seed = 2012250636.06297, options = list()), class = c("learnr_radio", 
 "tutorial_question")), session = session)
 </script>
  
 <script type="application/shiny-prerendered" data-context="server">
 learnr:::question_prerendered_chunk(structure(list(type = "learnr_radio", label = "quiz1-3", question = structure("How many columns are in the data frame named <code>cars<\u002fcode>?", html = TRUE, class = c("html", 
-"character")), answers = list(structure(list(id = "lnr_ans_596558", 
+"character")), answers = list(structure(list(id = "lnr_ans_fcde2bd", 
     option = "1", value = "1", label = structure("1", html = TRUE, class = c("html", 
     "character")), correct = FALSE, message = NULL, type = "literal"), class = c("tutorial_question_answer", 
-"tutorial_quiz_answer")), structure(list(id = "lnr_ans_6e926e4", 
+"tutorial_quiz_answer")), structure(list(id = "lnr_ans_42d281a", 
     option = "2", value = "2", label = structure("2", html = TRUE, class = c("html", 
     "character")), correct = TRUE, message = NULL, type = "literal"), class = c("tutorial_question_answer", 
-"tutorial_quiz_answer")), structure(list(id = "lnr_ans_3320028", 
+"tutorial_quiz_answer")), structure(list(id = "lnr_ans_70317b6", 
     option = "4", value = "4", label = structure("4", html = TRUE, class = c("html", 
     "character")), correct = FALSE, message = NULL, type = "literal"), class = c("tutorial_question_answer", 
-"tutorial_quiz_answer")), structure(list(id = "lnr_ans_ae59dd2", 
+"tutorial_quiz_answer")), structure(list(id = "lnr_ans_e754b53", 
     option = "more than four", value = "more than four", label = structure("more than four", html = TRUE, class = c("html", 
     "character")), correct = FALSE, message = NULL, type = "literal"), class = c("tutorial_question_answer", 
 "tutorial_quiz_answer"))), button_labels = list(submit = structure("<span data-i18n=\"button.questionsubmit\">Submit Answer<\u002fspan>", html = TRUE, class = c("html", 
@@ -785,7 +692,7 @@ learnr:::question_prerendered_chunk(structure(list(type = "learnr_radio", label 
 "character")), message = NULL, post_message = NULL), ids = list(
     answer = "quiz1-3-answer", question = "quiz1-3"), loading = structure("<strong>Loading:<\u002fstrong> \nHow many columns are in the data frame named <code>cars<\u002fcode>?\n<br/><br/><br/>", html = TRUE, class = c("html", 
 "character")), random_answer_order = FALSE, allow_retry = TRUE, 
-    seed = 2098902724.52262, options = list()), class = c("learnr_radio", 
+    seed = 993580794.537328, options = list()), class = c("learnr_radio", 
 "tutorial_question")), session = session)
 </script>
 
@@ -831,16 +738,16 @@ learnr:::store_exercise_cache(structure(list(label = "flights", global_setup = s
 
 <script type="application/shiny-prerendered" data-context="server">
 learnr:::question_prerendered_chunk(structure(list(type = "learnr_checkbox", label = "quiz2", question = structure("Which types of variables does <code>flights<\u002fcode> contain? Check all that apply.", html = TRUE, class = c("html", 
-"character")), answers = list(structure(list(id = "lnr_ans_c66fa5", 
+"character")), answers = list(structure(list(id = "lnr_ans_c5f8dab", 
     option = "integers", value = "integers", label = structure("integers", html = TRUE, class = c("html", 
     "character")), correct = TRUE, message = NULL, type = "literal"), class = c("tutorial_question_answer", 
-"tutorial_quiz_answer")), structure(list(id = "lnr_ans_6d8af94", 
+"tutorial_quiz_answer")), structure(list(id = "lnr_ans_7b9dc9b", 
     option = "doubles", value = "doubles", label = structure("doubles", html = TRUE, class = c("html", 
     "character")), correct = TRUE, message = NULL, type = "literal"), class = c("tutorial_question_answer", 
-"tutorial_quiz_answer")), structure(list(id = "lnr_ans_1cc7fa6", 
+"tutorial_quiz_answer")), structure(list(id = "lnr_ans_c9340d", 
     option = "factors", value = "factors", label = structure("factors", html = TRUE, class = c("html", 
     "character")), correct = FALSE, message = NULL, type = "literal"), class = c("tutorial_question_answer", 
-"tutorial_quiz_answer")), structure(list(id = "lnr_ans_16cca9d", 
+"tutorial_quiz_answer")), structure(list(id = "lnr_ans_34e04ca", 
     option = "characters", value = "characters", label = structure("characters", html = TRUE, class = c("html", 
     "character")), correct = TRUE, message = NULL, type = "literal"), class = c("tutorial_question_answer", 
 "tutorial_quiz_answer"))), button_labels = list(submit = structure("<span data-i18n=\"button.questionsubmit\">Submit Answer<\u002fspan>", html = TRUE, class = c("html", 
@@ -851,7 +758,7 @@ learnr:::question_prerendered_chunk(structure(list(type = "learnr_checkbox", lab
 "character")), message = NULL, post_message = NULL), ids = list(
     answer = "quiz2-answer", question = "quiz2"), loading = structure("<strong>Loading:<\u002fstrong> \nWhich types of variables does <code>flights<\u002fcode> contain? Check all that apply.\n<br/><br/><br/>", html = TRUE, class = c("html", 
 "character")), random_answer_order = FALSE, allow_retry = TRUE, 
-    seed = 695946782.175925, options = list()), class = c("learnr_checkbox", 
+    seed = 1606201895.75205, options = list()), class = c("learnr_checkbox", 
 "tutorial_question")), session = session)
 </script>
  
@@ -932,13 +839,6 @@ learnr:::store_exercise_cache(structure(list(label = "internals", global_setup =
         ""), out.width.px = 624, out.height.px = 384, params.src = "internals, exercise=T", 
         fig.num = 0, exercise.df_print = "default"), engine = "r"), class = "tutorial_exercise"))
 </script>
- 
-<script type="application/shiny-prerendered" data-context="server">
-
-learnrhash::encoder_logic()
-learnrhash::decoder_logic()
-#learnSTATS::encoder_logic()
-</script>
 </p>
 <!--html_preserve-->
 <script type="application/shiny-prerendered" data-context="dependencies">
@@ -947,7 +847,7 @@ learnrhash::decoder_logic()
 <!--/html_preserve-->
 <!--html_preserve-->
 <script type="application/shiny-prerendered" data-context="execution_dependencies">
-{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["packages"]}},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["packages","version"]},"class":{"type":"character","attributes":{},"value":["data.frame"]},"row.names":{"type":"integer","attributes":{},"value":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86]}},"value":[{"type":"character","attributes":{},"value":["assertthat","backports","base","broom","bslib","cellranger","checkmate","cli","colorspace","compiler","crayon","curl","datasets","DBI","dbplyr","digest","dplyr","ellipsis","evaluate","fansi","fastmap","forcats","fs","generics","ggplot2","glue","gradethis","graphics","grDevices","grid","gtable","haven","hms","htmltools","htmlwidgets","httpuv","httr","jquerylib","jsonlite","knitr","later","learnr","learnrhash","lifecycle","lubridate","magrittr","markdown","methods","mime","modelr","munsell","nycflights13","pillar","pkgconfig","promises","purrr","R6","Rcpp","readr","readxl","reprex","rlang","rmarkdown","rprojroot","rstudioapi","rvest","sass","scales","shiny","stats","stringi","stringr","tibble","tidyr","tidyselect","tidyverse","tools","tzdb","utf8","utils","vctrs","withr","xfun","xml2","xtable","yaml"]},{"type":"character","attributes":{},"value":["0.2.1","1.4.1","4.1.2","0.8.0","0.3.1","1.1.0","2.1.0","3.3.0","2.0-3","4.1.2","1.5.1","4.3.2","4.1.2","1.1.2","2.2.0","0.6.29","1.0.9","0.3.2","0.15","1.0.3","1.1.0","0.5.1","1.5.2","0.1.2","3.3.6","1.6.2","0.2.3.9001","4.1.2","4.1.2","4.1.2","0.3.0","2.5.0","1.1.1","0.5.2","1.5.4","1.6.5","1.4.3","0.1.4","1.8.0","1.39","1.3.0","0.10.2","0.2.0","1.0.1","1.8.0","2.0.3","1.1","4.1.2","0.12","0.1.8","0.5.0","1.0.2","1.7.0","2.0.3","1.2.0.1","0.3.4","2.5.1","1.0.8.3","2.1.2","1.4.0","2.0.1","1.0.2","2.14","2.0.3","0.13","1.0.2","0.4.1","1.2.0","1.7.1","4.1.2","1.7.6","1.4.0.9000","3.1.7","1.2.0","1.1.2","1.3.1","4.1.2","0.3.0","1.2.2","4.1.2","0.4.1","2.5.0","0.31","1.3.3","1.8-4","2.3.5"]}]}]}
+{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["packages"]}},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["packages","version"]},"class":{"type":"character","attributes":{},"value":["data.frame"]},"row.names":{"type":"integer","attributes":{},"value":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86]}},"value":[{"type":"character","attributes":{},"value":["assertthat","backports","base","broom","bslib","cachem","cellranger","checkmate","cli","colorspace","compiler","crayon","curl","datasets","DBI","dbplyr","digest","dplyr","ellipsis","evaluate","fansi","fastmap","forcats","fs","generics","ggplot2","glue","gradethis","graphics","grDevices","grid","gtable","haven","hms","htmltools","htmlwidgets","httpuv","httr","jquerylib","jsonlite","knitr","later","learnr","lifecycle","lubridate","magrittr","markdown","methods","mime","modelr","munsell","nycflights13","pillar","pkgconfig","promises","purrr","R6","Rcpp","readr","readxl","reprex","rlang","rmarkdown","rprojroot","rstudioapi","rvest","sass","scales","shiny","stats","stringi","stringr","tibble","tidyr","tidyselect","tidyverse","tools","tzdb","utf8","utils","vctrs","withr","xfun","xml2","xtable","yaml"]},{"type":"character","attributes":{},"value":["0.2.1","1.4.1","4.1.2","0.8.0","0.4.0","1.0.6","1.1.0","2.1.0","3.3.0","2.0-3","4.1.2","1.5.1","4.3.2","4.1.2","1.1.2","2.2.0","0.6.29","1.0.9","0.3.2","0.16","1.0.3","1.1.0","0.5.1","1.5.2","0.1.3","3.3.6","1.6.2","0.2.3.9001","4.1.2","4.1.2","4.1.2","0.3.0","2.5.0","1.1.1","0.5.2","1.5.4","1.6.5","1.4.3","0.1.4","1.8.0","1.39","1.3.0","0.10.2","1.0.1","1.8.0","2.0.3","1.1","4.1.2","0.12","0.1.8","0.5.0","1.0.2","1.8.0","2.0.3","1.2.0.1","0.3.4","2.5.1","1.0.8.3","2.1.2","1.4.0","2.0.1","1.0.2","2.14","2.0.3","0.13","1.0.2","0.4.2","1.2.0","1.7.1","4.1.2","1.7.6","1.4.0.9000","3.1.7","1.2.0","1.1.2","1.3.1","4.1.2","0.3.0","1.2.2","4.1.2","0.4.1","2.5.0","0.31","1.3.3","1.8-4","2.3.5"]}]}]}
 </script>
 <!--/html_preserve-->
 </div>
@@ -965,7 +865,7 @@ learnrhash::decoder_logic()
 <h2 class="title toc-ignore" style="display:none;">Data basics</h2>
 <h4 class="author"><em>Lightly edited from example in learnr
 package</em></h4>
-<h4 class="date"><em>2022-06-13</em></h4>
+<h4 class="date"><em>2022-08-16</em></h4>
 </div>
 <!-- end doc-metadata -->
 

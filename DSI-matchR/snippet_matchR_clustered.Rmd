@@ -305,6 +305,8 @@ Delete the wrong answers, leaving only 1 block (you can view the outputs for eve
 ggplot(trump_tweets, aes(x = retweet_count, y = favorite_count)) +
   geom_point(shape = 1) 
 cor.test(trump_tweets$retweet_count,trump_tweets$favorite_count)
+
+# \n
 ################### BLOCK 7 ########################
 trump_tweets %>% 
   select(created_at,retweet_count,favorite_count) %>%
@@ -314,6 +316,8 @@ trump_tweets %>%
   ggplot(aes(x=created_at, y=count, group=variable, colour=variable)) + 
   geom_line() +
   geom_point()
+
+# \n
 ################### BLOCK 17 ########################
 #We'll compare the bottom 25% of retweet counts to the rest by average favourites
 ggplot(trump_tweets %>% mutate(retweeted = ifelse(retweet_count > quantile(retweet_count, .25), "Y", "N")), 
@@ -347,23 +351,29 @@ grade_code()
 *What source has the highest sentiment?*
 For this one, we can see four tweets in the same range, what are the values and their content (the tweet text)?
 ```{r max, exercise = TRUE, exercise.lines=30, eval = T}
-########################BLOCK 13 ############################
+################### BLOCK 13 ############################
 trump_tweets %>% 
   filter(source %in% c("Twitter for Android","Twitter for iPhone")) %>% #filter to the two biggest sources
   ggplot(aes(x = factor(source), y = ave_sentiment)) +  #note, you'll often see , fill = factor(variable) here too, but unless it is adding additional information my view is colour is just visual noise, the axes already label the plots, adding colour doesn't add new information.
   geom_boxplot() +
   stat_summary(
     fun = mean, geom="point", shape=5, size=4)
+# \n 
 ################### 
 trump_tweets %>% 
   filter(source == "Twitter for Android") %>%
   slice_max(ave_sentiment, n = 1) %>%
   select(text,retweet_count,favorite_count,created_at,source,ave_sentiment) #uses dplyr slice function, and selects the columns we're interested in
+
+# \n 
 ################### 
+
 trump_tweets %>% 
   filter(source == "Twitter for iPhone") %>%
   slice_max(ave_sentiment, n = 1) %>%
   select(text,retweet_count,favorite_count,created_at,source,ave_sentiment) #uses dplyr slice function, and selects the columns we're interested in
+
+# \n
 ################### BLOCK 2 ########################
 ggplot(trump_tweets, 
        aes(x = source, y = ave_sentiment)) + 
@@ -413,13 +423,13 @@ grade_code()
 ### Q3
 *How do iphone and android compare in terms of number of words?*
 ```{r summary1, exercise = TRUE, exercise.lines=39, eval = T}
-################### BLOCK 5 ########################
+# \n ################### BLOCK 5 ########################
 ggplot(trump_tweets %>% filter(source %in% c("Twitter for Android","Twitter for iPhone")), 
        aes(x = source, y = word_count)) + 
   geom_bar(stat="identity", fill="steelblue") + 
   theme_minimal() +
   stat_summary(geom = "errorbar", fun.data = mean_se, position = "dodge")
-################### BLOCK 6 ########################
+# \n ################### BLOCK 6 ########################
 #Second version - sometimes it's useful to think about what information is included in different representations
 trump_tweets %>% 
   filter(source %in% c("Twitter for Android","Twitter for iPhone","TweetDeck","Twitter Web Client")) %>% #filter to the  biggest sources
