@@ -294,20 +294,32 @@ grade_code()
 We've made it easy below. You don't need to *write* your own code, just copy and paste our examples into the correct slot!
 
 
-## The questions - copy the code chunk(s) that best addresses it under each question
 
-### Q1
-*What is the relationship between retweets and likes?*
-Delete the wrong answers, leaving only 1 block (you can view the outputs for every block pre-rendered, or run this block)
+## Q1 What is the relationship between retweets and likes?
 
-```{r relationship, exercise = TRUE, exercise.lines=30 }
+```{r relationship-sol, echo = F}
+question("What is the relationship between retweets and likes?",
+  answer("Block 8", correct = TRUE, message = "Yes! There are other ways to explore the data, but if we care about relationship between two features, a scatterplot (and correlation coefficient) are a good place to start exploring."),
+  answer("Block 7", message = "Is time a relevant variable? Are favourites and retweets comparable on the same scales?"),
+  answer("Block 17", message = "The error bars are good! But you can see how this only really gives us insight into 1 feature of the data, and it doesn't tell us anything about the relationship between the two variables."),
+  allow_retry = TRUE
+  )
+```
+
+You can run the code below, or see the outputs underneath.
+
+**Block 8**
+```{r relationship-1, exercise = TRUE, exercise.lines=5 }
 ################### BLOCK 8 ########################
 ggplot(trump_tweets, aes(x = retweet_count, y = favorite_count)) +
   geom_point(shape = 1) 
-
+##
 cor.test(trump_tweets$retweet_count,trump_tweets$favorite_count)
 
-# \n
+```
+
+**Block 7**
+```{r relationship-2, exercise = TRUE, exercise.lines=10 }
 ################### BLOCK 7 ########################
 trump_tweets %>% 
   select(created_at,retweet_count,favorite_count) %>%
@@ -318,7 +330,10 @@ trump_tweets %>%
   geom_line() +
   geom_point()
 
-# \n
+```
+
+**Block 17**
+```{r relationship-3, exercise = TRUE, exercise.lines=10 }
 ################### BLOCK 17 ########################
 #We'll compare the bottom 25% of retweet counts to the rest by average favourites
 ggplot(trump_tweets %>% mutate(retweeted = ifelse(retweet_count > quantile(retweet_count, .25), "Y", "N")), 
@@ -326,15 +341,10 @@ ggplot(trump_tweets %>% mutate(retweeted = ifelse(retweet_count > quantile(retwe
   geom_bar(stat="summary", fun="mean", fill="steelblue", position = "dodge") + 
   theme_minimal() +
   stat_summary(geom = "errorbar", fun.data = "mean_se", position = "dodge")
+
 ```
 
-```{r relationship-solution}
-ggplot(trump_tweets, aes(x = retweet_count, y = favorite_count)) +
-  geom_point(shape = 1) 
-cor.test(trump_tweets$retweet_count,trump_tweets$favorite_count)
-```
-
-```{r relationship-code-check}
+```{r relationship-code-check, eval=FALSE, include=FALSE}
 grade_code()
 #block 8 - correct
 #block 7 and 17
@@ -345,13 +355,22 @@ grade_code()
 #   select(text,created_at,retweet_count,favorite_count,source) #uses dplyr slice function, and selects the columns we're interested in
 ```
 
+## Q2 What source has the highest sentiment?
 
-
-
-### Q2
-*What source has the highest sentiment?*
 For this one, we can see four tweets in the same range, what are the values and their content (the tweet text)?
-```{r max, exercise = TRUE, exercise.lines=30, eval = T}
+
+```{r max-sol, echo = F}
+question("What source has the highest sentiment?",
+  answer("Block 13", correct = TRUE, message = "Yes! What do we mean by max? Highest individual values? (susceptible to outliers), or a measure of the central tendency such as the mean or median? In exploration with this kind of data, it is often interesting to explore both the quantifiaction, and the underlying data (text, image, etc.) because it helps readers understand the data's meaning."),
+  answer("Block 2", message = "Bar charts are sometimes useful, especially with error bars which help us understand something of the distribution, but they only show 1 value and thus give little insight into the data"),
+  allow_retry = T
+  )
+```
+
+You can run the code below, or see the outputs underneath.
+
+**Block 13**
+```{r max, exercise = TRUE, exercise.lines=25, eval = T}
 ################### BLOCK 13 ############################
 trump_tweets %>% 
   filter(source %in% c("Twitter for Android","Twitter for iPhone")) %>% #filter to the two biggest sources
@@ -359,51 +378,32 @@ trump_tweets %>%
   geom_boxplot() +
   stat_summary(
     fun = mean, geom="point", shape=5, size=4)
-# \n 
 ################### 
 trump_tweets %>% 
   filter(source == "Twitter for Android") %>%
   slice_max(ave_sentiment, n = 1) %>%
   select(text,retweet_count,favorite_count,created_at,source,ave_sentiment) #uses dplyr slice function, and selects the columns we're interested in
-
-# \n 
 ################### 
-
 trump_tweets %>% 
   filter(source == "Twitter for iPhone") %>%
   slice_max(ave_sentiment, n = 1) %>%
   select(text,retweet_count,favorite_count,created_at,source,ave_sentiment) #uses dplyr slice function, and selects the columns we're interested in
 
-# \n
+```
+
+**Block 2**
+```{r max-2, exercise = TRUE, exercise.lines=10, eval = T}
 ################### BLOCK 2 ########################
 ggplot(trump_tweets, 
        aes(x = source, y = ave_sentiment)) + 
   geom_bar(stat="summary", fun="mean", fill="steelblue", position = "dodge") + 
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 90))
+
 ```
 
-```{r max-solution}
-#block 13
-trump_tweets %>% 
-  filter(source %in% c("Twitter for Android","Twitter for iPhone")) %>% #filter to the two biggest sources
-  ggplot(aes(x = factor(source), y = ave_sentiment)) +  #note, you'll often see , fill = factor(variable) here too, but unless it is adding additional information my view is colour is just visual noise, the axes already label the plots, adding colour doesn't add new information.
-  geom_boxplot() +
-  stat_summary(
-    fun = mean, geom="point", shape=5, size=4)
 
-trump_tweets %>% 
-  filter(source == "Twitter for Android") %>%
-  slice_max(ave_sentiment, n = 1) %>%
-  select(text,retweet_count,favorite_count,created_at,source,ave_sentiment) #uses dplyr slice function, and selects the columns we're interested in
-
-trump_tweets %>% 
-  filter(source == "Twitter for iPhone") %>%
-  slice_max(ave_sentiment, n = 1) %>%
-  select(text,retweet_count,favorite_count,created_at,source,ave_sentiment) #uses dplyr slice function, and selects the columns we're interested in
-```
-
-```{r max-code-check}
+```{r max-code-check, eval=FALSE, include=FALSE}
 grade_code()
 #block 13
 #Distractor is block 2
@@ -419,18 +419,34 @@ grade_code()
 #   select(text,retweet_count,favorite_count,created_at,source,ave_sentiment) #uses dplyr slice function, and selects the columns we're interested in
 ```
 
+## Q3 How do iphone and android compare in terms of number of words?
 
+```{r summary1-sol, echo=F}
+question("How do iphone and android compare in terms of number of words?",
+  answer("Block 5", message = "as above, bar charts display a very limited range of information"),
+  answer("Block 1", message = "Note, showing the boxplots and the variation in the underlying data (and size) is the interest here. Jitter is often useful to show the actual underlying data, but here while it gives us insight into the smaller sample for tweetdeck there are too many points for it to be meaningful. \n You can also see differences in the histogram, in this block using absolute values makes it hard to compare. That more tweets came from one source is not the key issue, we want to understand when a tweet is from source x, are there differences in length; normalising by frequency lets us do that (density)"),
+  answer("Block 6", correct = TRUE, message = "Yes! Note, showing the boxplots and the variation in the underlying data (and size) is the interest here. Jitter is often useful to show the actual underlying data, but here while it gives us insight into the smaller sample for tweetdeck there are too many points for it to be meaningful. \n You can also see differences in the histogram, in block 1 using absolute values makes it hard to compare. That more tweets came from one source is not the key issue, we want to understand when a tweet is from source x, are there differences in length; normalising by frequency lets us do that (density)"),
+  allow_retry=T
+  )
 
-### Q3
-*How do iphone and android compare in terms of number of words?*
-```{r summary1, exercise = TRUE, exercise.lines=39, eval = T}
-# \n ################### BLOCK 5 ########################
+```
+
+You can run the code below, or see the outputs underneath.
+
+**Block 5**
+```{r summary1, exercise = TRUE, exercise.lines=10, eval = T}
+################### BLOCK 5 ########################
 ggplot(trump_tweets %>% filter(source %in% c("Twitter for Android","Twitter for iPhone")), 
        aes(x = source, y = word_count)) + 
   geom_bar(stat="identity", fill="steelblue") + 
   theme_minimal() +
   stat_summary(geom = "errorbar", fun.data = mean_se, position = "dodge")
-# \n ################### BLOCK 6 ########################
+
+```
+
+**Block 6**
+```{r summary1-1, exercise = TRUE, exercise.lines=25, eval = T}
+################### BLOCK 6 ########################
 #Second version - sometimes it's useful to think about what information is included in different representations
 trump_tweets %>% 
   filter(source %in% c("Twitter for Android","Twitter for iPhone","TweetDeck","Twitter Web Client")) %>% #filter to the  biggest sources
@@ -446,6 +462,11 @@ ggplot(trump_tweets %>% filter(source %in% c("Twitter for Android","Twitter for 
   geom_histogram(alpha = .5, position = 'identity',  
                  aes(y = ..density..*width), show.legend = FALSE) + 
   facet_grid (. ~ source) ##..density..*width shows the proportion effectively normalised by group (iphone and android).  #note use of 'density' because we have unequal  counts in each dataset, and this lets us understand the data as a proportion which accounts for the unequal samples Alpha is the transparency level.
+
+```
+
+**Block 1**
+```{r summary1-2, exercise = TRUE, exercise.lines=25, eval = T}
 ################### BLOCK 1 ########################
 #First version  - sometimes it's useful to think about what information is included in different representations
 trump_tweets %>% 
@@ -462,28 +483,11 @@ ggplot(trump_tweets %>%
          filter(source %in% c("Twitter for Android","Twitter for iPhone","TweetDeck","Twitter Web Client")), 
        aes(x = word_count, fill = source)) + 
   geom_histogram(alpha = .5, position = 'identity') + 
-  facet_grid (. ~ source)     
+  facet_grid (. ~ source) 
+
 ```
 
-```{r summary1-solution}
-#Second version - sometimes it's useful to think about what information is included in different representations
-trump_tweets %>% 
-  filter(source %in% c("Twitter for Android","Twitter for iPhone","TweetDeck","Twitter Web Client")) %>% #filter to the  biggest sources
-  ggplot(aes(x = factor(source), y = word_count)) +  #note, you'll often see , fill = factor(variable) here too, but unless it is adding additional information my view is colour is just visual noise, the axes already label the plots, adding colour doesn't add new information.
-  geom_boxplot() +
-  stat_summary(
-    fun = mean, geom="point", shape=5, size=4)
-
-kable(table(trump_tweets$source), output = "html")
-
-ggplot(trump_tweets %>% filter(source %in% c("Twitter for Android","Twitter for iPhone","TweetDeck","Twitter Web Client")), 
-       aes(x = word_count, fill = source)) + 
-  geom_histogram(alpha = .5, position = 'identity',  
-                 aes(y = ..density..*width), show.legend = FALSE) + 
-  facet_grid (. ~ source) ##..density..*width shows the proportion effectively normalised by group (iphone and android).  #note use of 'density' because we have unequal  counts in each dataset, and this lets us understand the data as a proportion which accounts for the unequal samples Alpha is the transparency level.
-```
-
-```{r summary1-code-check}
+```{r summary1-code-check, eval=FALSE, include=FALSE}
 grade_code()
 
 #block 6
@@ -492,11 +496,24 @@ grade_code()
 #Note, showing the boxplots and the variation in the underlying data (and size) is the interest here. Jitter is often useful to show the actual underlying data, but here while it gives us insight into the smaller sample for tweetdeck there are too many points for it to be meaningful. 
 ```
 
+## Q4 What NRC sentiments occur in each source ?
 
+```{r props-sol, echo=F}
+question("What NRC sentiments occur in each source ?",
+  answer("Block 9", message = "Retweets aren't relevant to the question, and populating it this way makes it very hard to interpret. Block 12 makes it so much easier to (1) compare across the sources, because of the use of proportions/density instead of absolute values, and (2) the use of colours that help us distinguish the values, and (3) the reordering of the values in a meaningful way, so that the broadly negative values are in the red/brown space and the broadly positive values are in the blue/green space (you should have a rationale for doing this)."),
+  answer("Block 11", message = "This is better. But, (1) what we're really showing here is a function of (a) frequency of tweets from that source, so, tweetdeck is used less and so appears less, and (b) the colours are hard to interpret against the labels. Block 12 makes it so much easier to (1) compare across the sources, because of the use of proportions/density instead of absolute values, and (2) the use of colours that help us distinguish the values, and (3) the reordering of the values in a meaningful way, so that the broadly negative values are in the red/brown space and the broadly positive values are in the blue/green space (you should have a rationale for doing this)."),
+  answer("Block 12", correct = TRUE, message = "Great! It's important to look at the absolute values (i.e., the numbers), but proportions or relative values are often really informative. Block 12 makes it so much easier to (1) compare across the sources, because of the use of proportions/density instead of absolute values, and (2) the use of colours that help us distinguish the values, and (3) the reordering of the values in a meaningful way, so that the broadly negative values are in the red/brown space and the broadly positive values are in the blue/green space (you should have a rationale for doing this)."),
+  allow_retry = T
+  )
 
-### Q4
-*What NRC sentiments occur in each source ?*
-```{r props, exercise = TRUE, exercise.lines=47, eval = T }
+##You might explore tests of association here. These allow us to investigate associations between categories (e.g., between tweet-source, and tweet-emotion incidence)
+
+```
+
+You can run the code below, or see the outputs underneath.
+
+**Block 9** 
+```{r props, exercise = TRUE, exercise.lines=20, eval = T }
 ################### BLOCK 9 ########################
 # Scatterplot
 trump_tweets %>%
@@ -506,6 +523,7 @@ trump_tweets %>%
   geom_point(shape = 1) +
   theme(axis.text.x = element_text(angle = 90)) + 
   facet_grid( ~ source)
+# \\n
 #A correlation plot
 trump_tweets %>%
     filter(source %in% c("Twitter for Android","Twitter for iPhone","TweetDeck","Twitter Web Client")) %>% #filter to the  biggest sources
@@ -514,6 +532,11 @@ trump_tweets %>%
   na.omit() %>%
   cor() %>%
   corrplot()
+
+```
+
+**Block 11**
+```{r props-1, exercise = TRUE, exercise.lines=20, eval = T }
 ################### BLOCK 11 ########################
 # Stacked
 trump_tweets %>% 
@@ -521,6 +544,11 @@ trump_tweets %>%
   ggplot(aes(x=source, y=sentiment_nrc, fill=sentiment_nrc)) + 
     geom_bar(position="stack", stat="identity") +
     theme(axis.text.x = element_text(angle = 90))
+
+```
+
+**Block 12**
+```{r props-2, exercise = TRUE, exercise.lines=47, eval = T }
 ################### BLOCK 12 ########################
 # Stacked + percent - You might decide to remove tweetdeck too given it's a much smaller sample
 trump_tweets %>% 
@@ -544,42 +572,31 @@ ggplot(aes(x=source)) +
 #trust, joy, anticipation, all intersect with positive 
 #anger, disgust, fear, sadness all intersect with negative
 #surprise is sometimes positive or negative with interactive https://saifmohammad.com/WebPages/NRC-Emotion-Lexicon.htm
+
 ```
 
-```{r props-solution}
-# Stacked + percent - You might decide to remove tweetdeck too given it's a much smaller sample
-trump_tweets %>% 
-  filter(source %in% c("Twitter for Android","Twitter for iPhone","TweetDeck","Twitter Web Client") & !is.na(sentiment_nrc)) %>% #filter to the  biggest sources)
-  mutate(sentiment_nrc = factor(sentiment_nrc, levels=c("negative", "anger", "disgust", "fear", "sadness", "surprise",  "joy", "trust", "anticipation", "positive"))) %>%
-ggplot(aes(x=source)) + 
-    geom_bar(aes(fill=sentiment_nrc), position="fill") + 
-  theme(axis.text.x = element_text(angle = 90)) + 
-  scale_fill_manual(values = c("negative" = "#D55E00",
-                               "anger" = "#CC79A7", 
-                               "disgust" = "#E69F00", 
-                               "fear" = "#F0E442", 
-                               "sadness" = "red", 
-                               "surprise" = "#999999",
-                               "positive" = "#009E73", 
-                               "anticipation" = "#56B4E9", 
-                               "trust" = "green", 
-                               "joy" = "#0072B2")
-                    )
-```
-
-```{r props-code-check}
+```{r props-code-check, eval=FALSE, include=FALSE}
 grade_code()
 #Block 12
 #Distractors are blocks 9 and 11
 #You might explore tests of association here. These allow us to investigate associations between categories (e.g., between tweet-source, and tweet-emotion incidence)
 ```
 
+## Q5 How are NRC sentiment, source, and RTs associated?
 
+```{r association-sol, echo = FALSE}
 
-### Q5
-*How are NRC sentiment, source, and RTs associated? *
+question("How are NRC sentiment, source, and RTs associated?",
+  answer("Block 4, 10, 9 - these are definitely incorrect answers", message = "That's right!  There are ways you could explore this more, but crucially you should consider why you're conducting any particular analysis, and what your rationale is for treating the data the way you have. For example, does it really make sense to treat the emotion data as an interval level numeric variable for a correlation? (It seems to me to be at most ordinal, but likely nominal level data). You can see a couple of other insights here."),
+    answer("Don't do this! (block 3)", correct = TRUE, message = "That's right!  There are ways you could explore this more, but crucially you should consider why you're conducting any particular analysis, and what your rationale is for treating the data the way you have. For example, does it really make sense to treat the emotion data as an interval level numeric variable for a correlation? (It seems to me to be at most ordinal, but likely nominal level data). You can see a couple of other insights here.")
+  )
 
-```{r association, exercise = TRUE, exercise.lines=41, eval = T }
+```
+
+You can run the code below, or see the outputs underneath.
+
+**Block 9**
+```{r association, exercise = TRUE, exercise.lines=21, eval = T }
 ################### BLOCK 9 ########################
 # Scatterplot
 trump_tweets %>%
@@ -597,6 +614,11 @@ trump_tweets %>%
   na.omit() %>%
   cor() %>%
   corrplot()
+
+```
+
+**Block 3**
+```{r association-1, exercise = TRUE, exercise.lines=21, eval = T }
 ################### BLOCK 3 ########################
 print("I am a blank chunk")
 #Sometimes, the best way to address a question at this stage of the investigation is to break it down
@@ -605,6 +627,11 @@ print("I am a blank chunk")
 #(There's some sample code to do that in the feedback - it shows there's not much difference probably)
 #But, at this stage you're getting into the need to do different kinds of analysis, but there's still more value to get from sticking to descriptives.
 #To use this block, copy all this commented text
+
+```
+
+**Block 10**
+```{r association-2, exercise = TRUE, exercise.lines=41, eval = T }
 ################### BLOCK 10 ########################
 #Boxplots by source and sentiment 
 trump_tweets %>% 
@@ -615,6 +642,11 @@ trump_tweets %>%
     fun = mean, geom="point", shape=5, size=4) +
   facet_grid(. ~ source) +
   theme(axis.text.x = element_text(angle = 90))
+
+```
+
+**Block 4**
+```{r association-3, exercise = TRUE, exercise.lines=41, eval = T }
 ################### BLOCK 4 ########################
 #You can have this one for free - heatmaps can be useful sometimes, but not like this. 
 #trump_tweets %>% mutate(reply_to = ifelse(in_reply_to_user_id_str > 0, "Y", "N")) %>% 
@@ -625,18 +657,7 @@ trump_tweets %>% filter(source %in% c("Twitter for Android","Twitter for iPhone"
 
 ```
 
-```{r association-solution}
-print("I am a blank chunk")
-#Sometimes, the best way to address a question at this stage of the investigation is to break it down
-#In this case, you've looked at sentiment by source, and you've looked at RTs by source.
-#You could also look at RT by source, to investigate at a descriptive level
-#(There's some sample code to do that in the feedback - it shows there's not much difference probably)
-#But, at this stage you're getting into the need to do different kinds of analysis, but there's still more value to get from sticking to descriptives.
-
-#To use this block, copy all this commented text
-```
-
-```{r association-code-check}
+```{r association-code-check, eval=FALSE, include=FALSE}
 grade_this_code(
   correct = "That's right!  There are ways you could explore this more, but crucially you should consider why you're conducting any particular analysis, and what your rationale is for treating the data the way you have. For example, does it really make sense to treat the emotion data as an interval level numeric variable for a correlation? (It seems to me to be at most ordinal, but likely nominal level data). You can see a couple of other insights here ")
 
@@ -645,17 +666,16 @@ grade_this_code(
 #on feedback note the below
 #Boxplots by source and sentiment 
 
-
 ```
 
 <details>
 
 <summary> 
-click here for another couple of analyses of this data
+*click here for another couple of analyses of this data* (may not look expandable...it is)
 </summary>
 
-```{r}
-  trump_tweets %>% 
+```{r extensions}
+trump_tweets %>% 
   filter(source %in% c("Twitter for Android","Twitter for iPhone","TweetDeck","Twitter Web Client") & !is.na(sentiment_nrc)) %>% #filter to the  biggest sources
   ggplot(aes(x = factor(sentiment_nrc), y = retweet_count)) + 
   geom_boxplot() +
@@ -663,25 +683,41 @@ click here for another couple of analyses of this data
     fun = mean, geom="point", shape=5, size=4) +
   theme(axis.text.x = element_text(angle = 90))
 
-
 trump_tweets %>% 
   filter(source %in% c("Twitter for Android","Twitter for iPhone","TweetDeck","Twitter Web Client")) %>% 
   select(c(favorite_count,retweet_count,sentiment_nrc)) %>%
   psych::describeBy(favorite_count + retweet_count ~ sentiment_nrc, data = ., mat = T) %>%
   kable(digits=2, "html")
+
 ```
 
 </details>
 
-### Q6
-*What kind of language do Trump's tweets use?*
-```{r words, exercise = TRUE, exercise.lines=21, eval = T }
+## Q6 What kind of language do Trump's tweets use?
+
+```{r words-sol, echo = FALSE}
+question("What kind of language do Trump's tweets use?",
+  answer("Block 15", message = "You can see in Block 16 how a very simple approach - wordclouds - can provide useful insight, but how easy it is to be distracted by (1) unnecessary use of colour, shape, and size; and (2) how you can use the approach to actually gain insight e.g. through comparison. There are more sophisticated approaches (see the tidytext package for some nice tutorials). You should also consider if you're looking at unigrams (1 word) or if expressions (ngrams) or word-pairs (bigrams) are important. And whether your data is stemmed (stem, stemming, stemmed all treated same), or not."),
+    answer("Block 16", correct = TRUE, message = "You can see in Block 16 how a very simple approach - wordclouds - can provide useful insight, but how easy it is to be distracted by (1) unnecessary use of colour, shape, and size; and (2) how you can use the approach to actually gain insight e.g. through comparison. There are more sophisticated approaches (see the tidytext package for some nice tutorials). You should also consider if you're looking at unigrams (1 word) or if expressions (ngrams) or word-pairs (bigrams) are important. And whether your data is stemmed (stem, stemming, stemmed all treated same), or not.")
+  )
+
+```
+
+You can run the code below, or see the outputs underneath.
+
+**Block 15**
+```{r words, exercise = TRUE, exercise.lines=11, eval = T }
 ################### BLOCK 15 ########################
 wc <- tweet_words %>%
   anti_join(stop_words) %>%
   count(word) %>%
   slice_max(n, n = 500)
 ggwordcloud2(wc, color = "random-dark", shape = "star")
+
+```
+
+**Block 16**
+```{r words-1, exercise = TRUE, exercise.lines=21, eval = T }
 ################### BLOCK 16 ########################
 #wordcloud2(wc, color = "black", maxRotation = 0, minRotation = 0, shape = "diamond") #diamond is just a square
 #wordcloud - different package - makes simple ones too, and has an inbuilt function for comparison.  We'll do that for 2 groups positive and negative words (but you could use more)
@@ -693,20 +729,10 @@ tweet_words %>%
                    colors = c("grey20", "grey80"),
                    max.words = 100,
                    rot.per = 0)
+
 ```
 
-```{r words-solution}
-tweet_words %>%
-  inner_join(get_sentiments("bing")) %>%
-  count(word, sentiment, sort = TRUE) %>%
-  reshape2::acast(word ~ sentiment, value.var = "n", fill = 0) %>%  #ideally rewrite using spread from dplyr
-  comparison.cloud(term.matrix = ., 
-                   colors = c("grey20", "grey80"),
-                   max.words = 100,
-                   rot.per = 0)
-```
-
-```{r words-code-check}
+```{r words-code-check, eval=FALSE, include=FALSE}
 grade_code()
 #Correct is block 16, distractor 15
 
@@ -715,10 +741,10 @@ grade_code()
 <details>
 
 <summary>
-Click here for some extra insight into those tweets
+*Click here for some extra insight into those tweets*
 </summary>
 
-```{r extra_words, eval=T, warning=F}
+```{r extra-words, eval=T, warning=F}
 android_iphone_or <- tweet_words %>%
   count(word, source) %>%
   pivot_wider(names_from = "source", values_from = "n", values_fill = 0) %>%
@@ -736,266 +762,5 @@ android_iphone_or %>% filter(Android+iPhone > 100) %>%
 
 ```
 
-## Code blocks
-This is just all the code blocks from above.
-
-### Block 1
-```{r ggplot summarystats}
-#First version  - sometimes it's useful to think about what information is included in different representations
-trump_tweets %>% 
-  filter(source %in% c("Twitter for Android","Twitter for iPhone","TweetDeck","Twitter Web Client")) %>% #filter to the  biggest sources
-  ggplot(aes(x = factor(source), y = word_count)) +  #note, you'll often see , fill = factor(variable) here too, but unless it is adding additional information my view is colour is just visual noise, the axes already label the plots, adding colour doesn't add new information.
-  geom_boxplot() +
-  stat_summary(
-    fun = mean, geom="point", shape=5, size=4) +
-  geom_jitter()
-
-kable(table(trump_tweets$source), output = "html")
-
-ggplot(trump_tweets %>% 
-         filter(source %in% c("Twitter for Android","Twitter for iPhone","TweetDeck","Twitter Web Client")), 
-       aes(x = word_count, fill = source)) + 
-  geom_histogram(alpha = .5, position = 'identity') + 
-  facet_grid (. ~ source)                                              
-```
-
-
-### Block 2 
-```{r bars 1}
-ggplot(trump_tweets, 
-       aes(x = source, y = ave_sentiment)) + 
-  geom_bar(stat="summary", fun="mean", fill="steelblue", position = "dodge") + 
-  theme_minimal() +
-  theme(axis.text.x = element_text(angle = 90))
-```
-
-### Block 3
-```{r blank}
-
-#Sometimes, the best way to address a question at this stage of the investigation is to break it down
-#In this case, you've looked at sentiment by source, and you've looked at RTs by source.
-#You could also look at RT by source, to investigate at a descriptive level
-#(There's some sample code to do that in the feedback - it shows there's not much difference probably)
-#But, at this stage you're getting into the need to do different kinds of analysis, but there's still more value to get from sticking to descriptives.
-
-#To use this block, copy all this commented text
-```
-
-### Block 4 - this one's a freebie, it doesn't answer any of the questions well 
-```{r ggplot heatmap}
-#You can have this one for free - heatmaps can be useful sometimes, but not like this. 
-
-#trump_tweets %>% mutate(reply_to = ifelse(in_reply_to_user_id_str > 0, "Y", "N")) %>% 
-  
-trump_tweets %>% filter(source %in% c("Twitter for Android","Twitter for iPhone","TweetDeck","Twitter Web Client")) %>%
-  ggplot(aes(x = sentiment_nrc, source)) +
-  geom_tile(aes(fill = retweet_count)) +
-  theme(axis.text.x = element_text(angle = 90))
-
-```
-
-### Block 5
-```{r ggplot barchart}
-
-ggplot(trump_tweets %>% filter(source %in% c("Twitter for Android","Twitter for iPhone")), 
-       aes(x = source, y = word_count)) + 
-  geom_bar(stat="identity", fill="steelblue") + 
-  theme_minimal() +
-  stat_summary(geom = "errorbar", fun.data = mean_se, position = "dodge")
-
-```
-
-### Block 6
-```{r ggplot summarystats-2}
-
-#Second version - sometimes it's useful to think about what information is included in different representations
-trump_tweets %>% 
-  filter(source %in% c("Twitter for Android","Twitter for iPhone","TweetDeck","Twitter Web Client")) %>% #filter to the  biggest sources
-  ggplot(aes(x = factor(source), y = word_count)) +  #note, you'll often see , fill = factor(variable) here too, but unless it is adding additional information my view is colour is just visual noise, the axes already label the plots, adding colour doesn't add new information.
-  geom_boxplot() +
-  stat_summary(
-    fun = mean, geom="point", shape=5, size=4)
-
-kable(table(trump_tweets$source), output = "html")
-
-ggplot(trump_tweets %>% filter(source %in% c("Twitter for Android","Twitter for iPhone","TweetDeck","Twitter Web Client")), 
-       aes(x = word_count, fill = source)) + 
-  geom_histogram(alpha = .5, position = 'identity',  
-                 aes(y = ..density..*width), show.legend = FALSE) + 
-  facet_grid (. ~ source) ##..density..*width shows the proportion effectively normalised by group (iphone and android).  #note use of 'density' because we have unequal  counts in each dataset, and this lets us understand the data as a proportion which accounts for the unequal samples Alpha is the transparency level.
-
-
-```
-
-### Block 7
-```{r ggplot line example}
-
-trump_tweets %>% 
-  select(created_at,retweet_count,favorite_count) %>%
-  pivot_longer(cols = c("retweet_count","favorite_count"), names_to = "variable", values_to = "count") %>%
-     mutate(created_at=as.Date(created_at, format = "%Y-%m-%d")) %>%
-  filter(created_at > "2015-01-01") %>%
-  ggplot(aes(x=created_at, y=count, group=variable, colour=variable)) + 
-  geom_line() +
-  geom_point()
-
-```
-
-### Block 8
-```{r ggplot scatterplot example}
-ggplot(trump_tweets, aes(x = retweet_count, y = favorite_count)) +
-  geom_point(shape = 1) 
-cor.test(trump_tweets$retweet_count,trump_tweets$favorite_count)
-```
-
-### Block 9
-```{r ggplot scatterplot2}
-# Scatterplot
-trump_tweets %>%
-  filter(source %in% c("Twitter for Android","Twitter for iPhone","TweetDeck","Twitter Web Client")) %>% #filter to the  biggest sources
-  mutate(senti_score = recode(sentiment_nrc, "negative" = 1, "anger" = 2, "disgust" = 3, "fear" = 4, "sadness" = 5, "surprise" = 6, "anticipation" = 7, "trust" = 8, "joy" = 9, "positive" = 10)) %>%
-  ggplot(aes(x = senti_score, y = retweet_count)) +
-  geom_point(shape = 1) +
-  theme(axis.text.x = element_text(angle = 90)) + 
-  facet_grid( ~ source)
-
-
-#A correlation plot
-trump_tweets %>%
-    filter(source %in% c("Twitter for Android","Twitter for iPhone","TweetDeck","Twitter Web Client")) %>% #filter to the  biggest sources
-  mutate(senti_score = recode(sentiment_nrc, "negative" = 1, "anger" = 2, "disgust" = 3, "fear" = 4, "sadness" = 5, "surprise" = 6, "anticipation" = 7, "trust" = 8, "joy" = 9, "positive" = 10)) %>%
-  select(retweet_count,senti_score) %>%
-  na.omit() %>%
-  cor() %>%
-  corrplot()
-
-```
-
-### Block 10
-```{r ggplot side-by-side boxplot}
-#Boxplots by source and sentiment 
-trump_tweets %>% 
-  filter(source %in% c("Twitter for Android","Twitter for iPhone","TweetDeck","Twitter Web Client")) %>% #filter to the  biggest sources
-  ggplot(aes(x = factor(sentiment_nrc), y = retweet_count)) + 
-  geom_boxplot() +
-  stat_summary(
-    fun = mean, geom="point", shape=5, size=4) +
-  facet_grid(. ~ source) +
-  theme(axis.text.x = element_text(angle = 90))
-
-```
-
-### Block 11
-```{r ggplot summarystats2}
-# Stacked
-trump_tweets %>% 
-  filter(source %in% c("Twitter for Android","Twitter for iPhone","TweetDeck","Twitter Web Client") & !is.na(sentiment_nrc)) %>% #filter to the  biggest sources)
-  ggplot(aes(x=source, y=sentiment_nrc, fill=sentiment_nrc)) + 
-    geom_bar(position="stack", stat="identity") +
-    theme(axis.text.x = element_text(angle = 90))
-
-```
-
-### Block 12
-```{r barchart}
-# Stacked + percent - You might decide to remove tweetdeck too given it's a much smaller sample
-trump_tweets %>% 
-  filter(source %in% c("Twitter for Android","Twitter for iPhone","TweetDeck","Twitter Web Client") & !is.na(sentiment_nrc)) %>% #filter to the  biggest sources)
-  mutate(sentiment_nrc = factor(sentiment_nrc, levels=c("negative", "anger", "disgust", "fear", "sadness", "surprise",  "joy", "trust", "anticipation", "positive"))) %>%
-ggplot(aes(x=source)) + 
-    geom_bar(aes(fill=sentiment_nrc), position="fill") + 
-  theme(axis.text.x = element_text(angle = 90)) + 
-  scale_fill_manual(values = c("negative" = "#D55E00",
-                               "anger" = "#CC79A7", 
-                               "disgust" = "#E69F00", 
-                               "fear" = "#F0E442", 
-                               "sadness" = "red", 
-                               "surprise" = "#999999",
-                               "positive" = "#009E73", 
-                               "anticipation" = "#56B4E9", 
-                               "trust" = "green", 
-                               "joy" = "#0072B2")
-                    )
-#attempt to use palettes that are visible to those with colour blindness. This palette should be ok.  Two biggest groups are ordered (by the mutate statement) so you can read from the bottom or the top. 
-
-#trust, joy, anticipation, all intersect with positive 
-#anger, disgust, fear, sadness all intersect with negative
-#surprise is sometimes positive or negative with interactive https://saifmohammad.com/WebPages/NRC-Emotion-Lexicon.htm
-```
-
-### Block 13
-```{r boxplot2}
-trump_tweets %>% 
-  filter(source %in% c("Twitter for Android","Twitter for iPhone")) %>% #filter to the two biggest sources
-  ggplot(aes(x = factor(source), y = ave_sentiment)) +  #note, you'll often see , fill = factor(variable) here too, but unless it is adding additional information my view is colour is just visual noise, the axes already label the plots, adding colour doesn't add new information.
-  geom_boxplot() +
-  stat_summary(
-    fun = mean, geom="point", shape=5, size=4)
-
-
-trump_tweets %>% 
-  filter(source == "Twitter for Android") %>%
-  slice_max(ave_sentiment, n = 1) %>%
-  select(text,retweet_count,favorite_count,created_at,source,ave_sentiment) #uses dplyr slice function, and selects the columns we're interested in
-
-trump_tweets %>% 
-  filter(source == "Twitter for iPhone") %>%
-  slice_max(ave_sentiment, n = 1) %>%
-  select(text,retweet_count,favorite_count,created_at,source,ave_sentiment) #uses dplyr slice function, and selects the columns we're interested in
-    
-```
-
-### Block 14
-```{r barchart2}
-#separate bars
-trump_tweets %>% 
-  filter(source %in% c("Twitter for Android","Twitter for iPhone","TweetDeck","Twitter Web Client") & !is.na(sentiment_nrc)) %>% #filter to the  biggest sources) 
-  ggplot(aes(source, fill=sentiment_nrc)) + 
-    geom_bar(position = "dodge2") +
-  theme(axis.text.x = element_text(angle = 90))
-  
-```
-
-### Block 15
-```{r wordcloud}
-wc <- tweet_words %>%
-  anti_join(stop_words) %>%
-  count(word) %>%
-  slice_max(n, n = 500)
-
-ggwordcloud2(wc, color = "random-dark", shape = "star")
-```
-
-### Block 16
-```{r wordcloud2}
-wc <- tweet_words %>%
-  anti_join(stop_words) %>%
-  count(word) %>%
-  slice_max(n, n = 500)
-
-#wordcloud2(wc, color = "black", maxRotation = 0, minRotation = 0, shape = "diamond") #diamond is just a square
-
-#wordcloud - different package - makes simple ones too, and has an inbuilt function for comparison.  We'll do that for 2 groups positive and negative words (but you could use more)
-tweet_words %>%
-  inner_join(get_sentiments("bing")) %>%
-  count(word, sentiment, sort = TRUE) %>%
-  reshape2::acast(word ~ sentiment, value.var = "n", fill = 0) %>%  #ideally rewrite using spread from dplyr
-  comparison.cloud(term.matrix = ., 
-                   colors = c("grey20", "grey80"),
-                   max.words = 100,
-                   rot.per = 0)
-
-```
-
-### Block 17
-```{r}
-#We'll compare the bottom 25% of retweet counts to the rest by average favourites
-ggplot(trump_tweets %>% mutate(retweeted = ifelse(retweet_count > quantile(retweet_count, .25), "Y", "N")), 
-       aes(x = retweeted, y = favorite_count)) + 
-  geom_bar(stat="summary", fun="mean", fill="steelblue", position = "dodge") + 
-  theme_minimal() +
-  stat_summary(geom = "errorbar", fun.data = "mean_se", position = "dodge")
-
-```
-
 </details>
+

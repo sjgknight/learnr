@@ -86,7 +86,7 @@ This one is more interesting! In this one, you will have to address _questions_ 
 #You should have this directory locally, and so the first line will work.  If you want to check you have the most current version, uncomment the github lines and run that. 
 
 if (interactive()) {
-  runlearnr("DSI-matchR/snippet_matchR_clustered.Rmd")
+  runlearnr("DSI-matchR/snippet_matchR_clustered_quizy.Rmd")
   }
 
 ## to get from github
